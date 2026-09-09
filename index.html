@@ -7,7 +7,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
-  <!-- V30.2.1 FINAL: hardened single-file build -->
+  <!-- V30.4.1 FINAL: hardened single-file build -->
 <title>Perfume Calculator • LIVE</title>
   <style>
 *{box-sizing:border-box}
@@ -101,32 +101,6 @@ body{min-height:100vh;min-height:100dvh}button,input{font:inherit}button{cursor:
   .bundle-item-row{grid-template-columns:1fr 1fr}
 }
 
-
-/* ---------- V31 Label Studio module ---------- */
-.segmented.seven{grid-template-columns:repeat(7,1fr)}
-.label-studio-grid{display:grid;grid-template-columns:minmax(300px,.85fr) minmax(340px,1.15fr);gap:14px;align-items:start}
-.label-panel{border:1px solid var(--border);border-radius:16px;padding:14px;background:#fff}
-.label-panel h3{margin:0 0 10px;font-size:16px}
-.label-row{display:flex;gap:8px;align-items:end;flex-wrap:wrap}.label-row>*{min-width:0}
-.label-row .grow{flex:1 1 220px}.label-row button{flex:0 0 auto}
-.label-grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.label-grid2 label,.label-control label{display:block;margin:0}
-.label-grid2 label span,.label-control label span{display:block;font-size:12px;font-weight:800;color:var(--muted);margin:0 0 5px}
-.label-mls,.label-presets,.label-orient{display:flex;gap:7px;flex-wrap:wrap;margin-top:6px}
-.label-mls button,.label-presets button,.label-orient button{border:1px solid var(--border);background:#fff;color:var(--text);padding:9px 11px;border-radius:10px;font-weight:800}
-.label-mls button.active,.label-presets button.active,.label-orient button.active{background:#111827;color:#fff;border-color:#111827}
-.label-preview-wrap{background:#e5e7eb;border-radius:14px;padding:18px;min-height:250px;display:flex;align-items:center;justify-content:center;overflow:auto}
-#labelCanvas{display:block;background:white;max-width:100%;height:auto;box-shadow:0 2px 12px rgba(0,0,0,.12)}
-.label-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}.label-actions button{min-height:44px}
-.label-status{min-height:19px;margin:9px 0 0;font-size:12px;color:var(--muted)}.label-status.error{color:#b91c1c}.label-status.good{color:#047857}
-.label-tips{font-size:12px;line-height:1.5;color:var(--muted);background:#f8fafc;border-radius:11px;padding:10px;margin-top:10px}
-.label-mini{font-size:12px;color:var(--muted);margin:5px 0 0}
-.label-range{width:100%}
-.label-check{display:flex!important;align-items:center;gap:8px;margin-top:9px!important;font-weight:700;font-size:13px}.label-check input{width:auto}
-.label-details{margin-top:10px;border:1px solid var(--border);border-radius:11px;padding:10px}.label-details summary{cursor:pointer;font-weight:800}
-@media(max-width:900px){.segmented.seven{grid-template-columns:repeat(4,1fr)}.label-studio-grid{grid-template-columns:1fr}.label-preview-panel{order:-1}}
-@media(max-width:560px){.segmented.seven{grid-template-columns:repeat(2,1fr)}.label-grid2{grid-template-columns:1fr 1fr}.label-actions{grid-template-columns:1fr}.label-preview-wrap{min-height:190px;padding:10px}}
-
 </style>
 </head>
 <body>
@@ -137,7 +111,7 @@ body{min-height:100vh;min-height:100dvh}button,input{font:inherit}button{cursor:
       <div>
         <p class="eyebrow">PERFUME PRICE TOOL</p>
         <h1>Perfume Calculator</h1>
-        <p class="sub">Price + Bundle + Credit + Admin + BIG INS Label/Print • Google Sheet LIVE • Single-file.</p>
+        <p class="sub">Bundle Set module ပါပြီ • Perfume ၅ မျိုး • same ml • editable Margin • Bottle size cost memory.</p>
       </div>
       <button id="installBtn" class="ghost hidden">Install App</button>
     </header>
@@ -149,13 +123,12 @@ body{min-height:100vh;min-height:100dvh}button,input{font:inherit}button{cursor:
           <p>Choose one pricing module</p>
         </div>
       </div>
-      <div class="segmented seven">
+      <div class="segmented six">
         <button class="seg active" data-mode="consignment">Consignment</button>
         <button class="seg" data-mode="direct">Direct</button>
         <button class="seg" data-mode="fullsize">Full Size</button>
         <button class="seg" data-mode="bundle">Bundle Set</button>
         <button class="seg" data-mode="credit">Credit Sale</button>
-        <button class="seg" data-mode="label">Label / Print</button>
         <button class="seg" data-mode="admin">Admin</button>
       </div>
     </section>
@@ -236,8 +209,22 @@ body{min-height:100vh;min-height:100dvh}button,input{font:inherit}button{cursor:
         </label>
 
         <label class="fullsize-only hidden">
-          <span>Full Size Markup (%) — 10 to 15%</span>
-          <input id="fullSizeMarkup" type="number" min="10" max="15" step="1" value="15" />
+          <span>Full Size Margin (%)</span>
+          <select id="fullSizeMarkup">
+            <option value="10">10%</option>
+            <option value="11">11%</option>
+            <option value="12">12%</option>
+            <option value="13">13%</option>
+            <option value="14">14%</option>
+            <option value="15" selected>15%</option>
+            <option value="custom">Custom %</option>
+          </select>
+          <small style="color:var(--muted);font-size:11px">10–15% အတွင်း လိုသလိုပြောင်းနိုင်ပါတယ်။ Perfume ပြောင်းလည်း ဒီ margin မပြန်ပြောင်းပါဘူး။</small>
+        </label>
+
+        <label id="fullSizeCustomMarkupWrap" class="fullsize-only hidden">
+          <span>Custom Full Size Margin (%)</span>
+          <input id="fullSizeCustomMarkup" type="number" min="10" max="15" step="0.1" value="12.5" />
         </label>
 
         <label class="fullsize-only hidden">
@@ -569,107 +556,6 @@ body{min-height:100vh;min-height:100dvh}button,input{font:inherit}button{cursor:
       </div>
     </section>
 
-
-    <section id="labelModule" class="card hidden">
-      <div class="section-head">
-        <div>
-          <p class="eyebrow">BIG INS • LABEL STUDIO</p>
-          <h2>Perfume Label / Print</h2>
-          <p>Calculator ထဲက LIVE perfume list ကို တိုက်ရိုက်သုံးပါတယ်။ Perfume တစ်မျိုးစီအတွက် label စာသားကို တစ်ခါ Save လုပ်ထားရုံနဲ့ နောက်တစ်ခါ auto-load ဖြစ်မယ်။</p>
-        </div>
-        <span id="labelCatalogBadge" class="live-badge offline">CATALOG</span>
-      </div>
-
-      <div class="label-studio-grid">
-        <div class="label-panel label-control">
-          <h3>1. Perfume + Volume</h3>
-          <label><span>Calculator perfume</span>
-            <div class="label-row">
-              <select id="labelPerfumeSelect" class="grow" aria-label="Label perfume"></select>
-              <button id="labelUseCurrentBtn" class="secondary" type="button">Use Current</button>
-            </div>
-          </label>
-          <p class="label-mini">Google Sheet LIVE perfume list ပြောင်းရင် ဒီ dropdown လည်းလိုက်ပြောင်းမယ်။</p>
-
-          <div class="label-grid2" style="margin-top:12px">
-            <label><span>Line 1</span><input id="labelLine1" value="Jean Paul"></label>
-            <label><span>Line 2</span><input id="labelLine2" value="GAULTIER"></label>
-            <label><span>Line 3</span><input id="labelLine3" value="LE MALE"></label>
-            <label><span>Line 4</span><input id="labelLine4" value="LE PARFUM"></label>
-          </div>
-          <div class="label-row" style="margin-top:8px">
-            <button id="labelSaveProfileBtn" class="secondary" type="button">Save Label Info</button>
-            <button id="labelResetProfileBtn" class="secondary" type="button">Auto Name</button>
-          </div>
-
-          <label style="margin-top:13px"><span>Volume</span></label>
-          <div id="labelMlButtons" class="label-mls">
-            <button type="button" data-label-ml="5">5ml</button>
-            <button type="button" data-label-ml="10" class="active">10ml</button>
-            <button type="button" data-label-ml="15">15ml</button>
-            <button type="button" data-label-ml="30">30ml</button>
-            <button type="button" data-label-ml="50">50ml</button>
-          </div>
-          <input id="labelCustomMl" type="number" min="0.5" step="0.5" placeholder="Custom ml" style="margin-top:8px">
-
-          <hr>
-          <h3>2. Label Size</h3>
-          <div id="labelSizePresets" class="label-presets">
-            <button type="button" class="active" data-lw="40" data-lh="20">40×20</button>
-            <button type="button" data-lw="50" data-lh="30">50×30</button>
-            <button type="button" data-lw="65" data-lh="25">65×25</button>
-          </div>
-          <div class="label-grid2" style="margin-top:9px">
-            <label><span>Width mm</span><input id="labelWidthMm" type="number" min="15" max="100" step="0.1" value="40"></label>
-            <label><span>Height mm</span><input id="labelHeightMm" type="number" min="10" max="100" step="0.1" value="20"></label>
-          </div>
-          <label style="margin-top:10px"><span>Orientation</span></label>
-          <div id="labelOrientation" class="label-orient">
-            <button type="button" class="active" data-label-orientation="h">Horizontal ↔</button>
-            <button type="button" data-label-orientation="v">Vertical ↕</button>
-          </div>
-
-          <hr>
-          <h3>3. Print Look</h3>
-          <div class="label-grid2">
-            <label><span>Font</span><select id="labelFontStyle"><option value="classic">Classic</option><option value="condensed">Condensed</option><option value="clean">Clean</option><option value="bold">Bold</option></select></label>
-            <label><span>DPI</span><select id="labelDpi"><option value="203" selected>203 DPI (ST201A)</option><option value="300">300 DPI</option><option value="406">406 DPI</option></select></label>
-          </div>
-          <div class="label-grid2" style="margin-top:8px">
-            <label><span>Logo size</span><input id="labelLogoScale" class="label-range" type="range" min="65" max="130" value="95"></label>
-            <label><span>Text size</span><input id="labelTextScale" class="label-range" type="range" min="80" max="125" value="100"></label>
-          </div>
-          <label class="label-check"><input id="labelShowLogo" type="checkbox" checked> BIG INS logo + BIG INS</label>
-          <label class="label-check"><input id="labelShowDivider" type="checkbox" checked> ml မတိုင်ခင် divider</label>
-          <label class="label-check"><input id="labelThermal" type="checkbox" checked> Thermal B/W</label>
-          <details class="label-details">
-            <summary>Fine tune</summary>
-            <div class="label-grid2" style="margin-top:9px">
-              <label><span>X offset mm</span><input id="labelXOffset" type="number" step="0.1" value="0"></label>
-              <label><span>Y offset mm</span><input id="labelYOffset" type="number" step="0.1" value="0"></label>
-              <label><span>Inner margin mm</span><input id="labelMarginMm" type="number" min="0" max="5" step="0.1" value="0.6"></label>
-              <label><span>Black density</span><input id="labelDensity" class="label-range" type="range" min="100" max="230" value="180"></label>
-            </div>
-          </details>
-        </div>
-
-        <div class="label-panel label-preview-panel">
-          <div class="section-head" style="margin-bottom:10px">
-            <div><h3 style="margin:0">Live Preview</h3><p id="labelMeta" class="label-mini"></p></div>
-            <button id="labelPreviewResetBtn" class="secondary" type="button">Reset Size</button>
-          </div>
-          <div class="label-preview-wrap"><canvas id="labelCanvas" width="320" height="160"></canvas></div>
-          <div class="label-actions">
-            <button id="labelPngBtn" class="primary-btn" type="button">Save PNG</button>
-            <button id="labelShareBtn" class="secondary" type="button">Share PNG</button>
-            <button id="labelPrintBtn" class="secondary" type="button">Print</button>
-          </div>
-          <p id="labelStatus" class="label-status" aria-live="polite">Ready</p>
-          <div class="label-tips"><b>ST201A:</b> 40×20mm + 203 DPI + Thermal B/W. Printer app မှာ paper/template ကို 40×20mm တိတိထားပြီး Binary/OTSU သုံးပါ။ Outer border မဆွဲပါဘူး။</div>
-        </div>
-      </div>
-    </section>
-
     <section id="creditModule" class="card credit-card hidden">
       <div class="section-head">
         <div>
@@ -733,7 +619,7 @@ body{min-height:100vh;min-height:100dvh}button,input{font:inherit}button{cursor:
 
 
 
-    <footer><p>Perfume Calculator V31 • Label Studio • In-App Admin • Google Sheet LIVE • Single-file</p></footer>
+    <footer><p>Perfume Calculator V30.4 FINAL • In-App Admin • Google Sheet LIVE • Single-file</p></footer>
   </main>
 
   <script>
@@ -831,7 +717,7 @@ function applyRemotePerfumeToPricing(match,{force=false}={}){
   if(currentName && currentName!==matchName) return false;
 
   if($("name")) $("name").value=match.name||"";
-  ["fullPrice","bottleMl","wastage","consignment","targetMargin","directMarkup","fullSizeMarkup","roundTo"].forEach(k=>{
+  ["fullPrice","bottleMl","wastage","consignment","targetMargin","directMarkup","roundTo"].forEach(k=>{
     if(match[k]!==undefined && $(k)) $(k).value=match[k];
   });
   syncPackCostToSelectedSize({showNote:false});
@@ -854,7 +740,6 @@ function setPricingMode(which){
   $("creditModule").classList.add("hidden");
   if($("bundleModule")) $("bundleModule").classList.add("hidden");
   if($("adminModule")) $("adminModule").classList.add("hidden");
-  if($("labelModule")) $("labelModule").classList.add("hidden");
   updateModeUI();
   calculate();
   renderSaved();
@@ -909,9 +794,68 @@ function calcDirect(sizeMl){
   return {...b,markupPct,roundTo,targetPrice,recommended,consignFee:0,netReceipt:recommended,netProfit,actualMargin,fullRevenue};
 }
 
+const FULLSIZE_MARGIN_KEY="perfumeFullSizeMarginV1";
+
+function fullSizeMarginPct(){
+  const choice=String($("fullSizeMarkup")?.value||"15");
+  let v;
+  if(choice==="custom") v=Number($("fullSizeCustomMarkup")?.value||15);
+  else v=Number(choice);
+  if(!Number.isFinite(v)) v=15;
+  return clamp(v,10,15);
+}
+
+function rememberFullSizeMargin(){
+  const v=fullSizeMarginPct();
+  try{ localStorage.setItem(FULLSIZE_MARGIN_KEY,String(v)); }catch{}
+}
+
+function setFullSizeMarginControl(value){
+  let v=Number(value);
+  if(!Number.isFinite(v)) v=15;
+  v=clamp(v,10,15);
+
+  const select=$("fullSizeMarkup");
+  const custom=$("fullSizeCustomMarkup");
+  const wrap=$("fullSizeCustomMarkupWrap");
+  if(!select) return;
+
+  const standard=[10,11,12,13,14,15];
+  const exact=standard.some(x=>Math.abs(x-v)<0.000001);
+  if(exact){
+    select.value=String(v);
+    if(wrap) wrap.classList.add("hidden");
+  }else{
+    select.value="custom";
+    if(custom) custom.value=String(v);
+    if(wrap) wrap.classList.toggle("hidden",mode!=="fullsize");
+  }
+}
+
+function restoreFullSizeMargin(){
+  let saved=15;
+  try{
+    const v=Number(localStorage.getItem(FULLSIZE_MARGIN_KEY));
+    if(Number.isFinite(v)) saved=v;
+  }catch{}
+  setFullSizeMarginControl(saved);
+}
+
+function ensureFullSizeMarkupOption(v){
+  const sel=$("adminFullSizeMarkup");
+  const n=Number(v);
+  if(!sel || !Number.isFinite(n) || n<10 || n>15) return;
+  const value=String(n);
+  if(!Array.from(sel.options).some(o=>o.value===value)){
+    const opt=document.createElement("option");
+    opt.value=value; opt.textContent=`${n}%`;
+    sel.appendChild(opt);
+  }
+}
+
 function calcFullSize(){
   const fullPrice=n("fullPrice");
-  const markupPct=clamp(n("fullSizeMarkup")||15,10,15);
+  const markupPct=fullSizeMarginPct();
   const deliveryCharge=5000;
   const markupAmount=fullPrice*markupPct/100;
   const beforeDeli=fullPrice+markupAmount;
@@ -977,6 +921,9 @@ function updateModeUI(){
   document.querySelectorAll(".consignment-only").forEach(el=>el.classList.toggle("hidden",!isConsign));
   document.querySelectorAll(".direct-only").forEach(el=>el.classList.toggle("hidden",!isDirect));
   document.querySelectorAll(".fullsize-only").forEach(el=>el.classList.toggle("hidden",!isFull));
+  if($("fullSizeCustomMarkupWrap")){
+    $("fullSizeCustomMarkupWrap").classList.toggle("hidden",!isFull || $("fullSizeMarkup")?.value!=="custom");
+  }
   $("quickSizes").classList.toggle("hidden",isFull);
   $("decantStats").classList.toggle("hidden",isFull);
   $("mlPriceSection").classList.toggle("hidden",isFull);
@@ -1020,6 +967,22 @@ ids.forEach(id=>{
     if(!el.readOnly && !el.disabled && e.isTrusted) markPricingDirty();
   });
 });
+
+if($("fullSizeMarkup")) $("fullSizeMarkup").addEventListener("change",()=>{
+  const isCustom=$("fullSizeMarkup").value==="custom";
+  if($("fullSizeCustomMarkupWrap")){
+    $("fullSizeCustomMarkupWrap").classList.toggle("hidden",mode!=="fullsize" || !isCustom);
+  }
+  rememberFullSizeMargin();
+  markPricingDirty();
+  calculate();
+});
+if($("fullSizeCustomMarkup")) $("fullSizeCustomMarkup").addEventListener("input",()=>{
+  rememberFullSizeMargin();
+  markPricingDirty();
+  calculate();
+});
+
 document.querySelectorAll(".seg").forEach(btn=>btn.addEventListener("click",()=>{
   const chosen=btn.dataset.mode;
 
@@ -1035,15 +998,12 @@ document.querySelectorAll(".seg").forEach(btn=>btn.addEventListener("click",()=>
   const isCredit=chosen==="credit";
   const isAdmin=chosen==="admin";
   const isBundle=chosen==="bundle";
-  const isLabel=chosen==="label";
-  $("pricingModule").classList.toggle("hidden",isCredit||isAdmin||isBundle||isLabel);
+  $("pricingModule").classList.toggle("hidden",isCredit||isAdmin||isBundle);
   $("creditModule").classList.toggle("hidden",!isCredit);
   if($("bundleModule")) $("bundleModule").classList.toggle("hidden",!isBundle);
   if($("adminModule")) $("adminModule").classList.toggle("hidden",!isAdmin);
-  if($("labelModule")) $("labelModule").classList.toggle("hidden",!isLabel);
   if(isCredit){ renderCredits(); return; }
   if(isBundle){ renderBundlePickers(); syncBundleBottleCost(); calculateBundle(); updateBundleLiveBadge(); return; }
-  if(isLabel){ syncLabelFromCalculator(); renderLabelPerfumePicker(); renderLabelPreview(); return; }
   if(isAdmin){ renderAdminPicker(); updateAdminLiveBadge(); return; }
 }));
 document.querySelectorAll(".quick-sizes button").forEach(btn=>btn.addEventListener("click",()=>{
@@ -1394,7 +1354,7 @@ function setSaved(items){
   renderSaved();
   renderSavedPicker();
 }
-function currentPayload(){ return {name:$("name").value.trim()||"Untitled Perfume",mode,fullPrice:n("fullPrice"),bottleMl:n("bottleMl"),decantMl:n("decantMl"),wastage:n("wastage"),packCost:n("packCost"),consignment:n("consignment"),targetMargin:n("targetMargin"),directMarkup:n("directMarkup"),fullSizeMarkup:clamp(n("fullSizeMarkup")||15,10,15),roundTo:n("roundTo")}; }
+function currentPayload(){ return {name:$("name").value.trim()||"Untitled Perfume",mode,fullPrice:n("fullPrice"),bottleMl:n("bottleMl"),decantMl:n("decantMl"),wastage:n("wastage"),packCost:n("packCost"),consignment:n("consignment"),targetMargin:n("targetMargin"),directMarkup:n("directMarkup"),fullSizeMarkup:fullSizeMarginPct(),roundTo:n("roundTo")}; }
 $("saveBtn").addEventListener("click",()=>{
   // Freeze current calculator edits before opening Admin.
   if($("name")?.value.trim()) pricingFormDirty=true;
@@ -1415,7 +1375,8 @@ $("saveBtn").addEventListener("click",()=>{
       $("adminConsignment").value=n("consignment");
       $("adminTargetMargin").value=n("targetMargin");
       $("adminDirectMarkup").value=n("directMarkup");
-      $("adminFullSizeMarkup").value=n("fullSizeMarkup")||15;
+      ensureFullSizeMarkupOption(fullSizeMarginPct());
+      $("adminFullSizeMarkup").value=String(fullSizeMarginPct());
       $("adminRoundTo").value=n("roundTo")||1000;
       $("adminMode").value=["consignment","direct","fullsize"].includes(lastPricingMode)?lastPricingMode:"consignment";
     }
@@ -1428,7 +1389,7 @@ function loadItem(i){
 
   // Perfume data is shared. Loading a perfume never forces a pricing mode change.
   $("name").value=x.name||"";
-  ["fullPrice","bottleMl","wastage","consignment","targetMargin","directMarkup","fullSizeMarkup","roundTo"].forEach(k=>{
+  ["fullPrice","bottleMl","wastage","consignment","targetMargin","directMarkup","roundTo"].forEach(k=>{
     if(x[k]!==undefined&&$(k)) $(k).value=x[k];
   });
   syncPackCostToSelectedSize({showNote:false});
@@ -1439,7 +1400,6 @@ function loadItem(i){
   $("creditModule").classList.add("hidden");
   if($("bundleModule")) $("bundleModule").classList.add("hidden");
   if($("adminModule")) $("adminModule").classList.add("hidden");
-  if($("labelModule")) $("labelModule").classList.add("hidden");
   document.querySelectorAll(".seg").forEach(b=>b.classList.toggle("active",b.dataset.mode===mode));
   updateModeUI();
   calculate();
@@ -1621,7 +1581,7 @@ $("loadSelectedBtn").addEventListener("click",()=>{
 if($("clearSaved")) $("clearSaved").addEventListener("click",()=>window.open(SHEET_EDIT_URL,"_blank","noopener"));
 
 function exportBackup(){
-  const payload={app:"Perfume Calculator",version:30.2,exportedAt:new Date().toISOString(),savedPerfumes:getSaved(),creditSales:typeof getCredits==="function"?getCredits():[]};
+  const payload={app:"Perfume Calculator",version:30.4,exportedAt:new Date().toISOString(),savedPerfumes:getSaved(),creditSales:typeof getCredits==="function"?getCredits():[]};
   const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
   const url=URL.createObjectURL(blob), a=document.createElement("a");
   a.href=url; a.download=`perfume-calculator-backup-${todayLocal()}.json`; document.body.appendChild(a); a.click(); a.remove();
@@ -1788,7 +1748,8 @@ function adminFill(x,{existing=false}={}){
   ensureMarginOption(Number(x.targetMargin??20));
   $("adminTargetMargin").value=String(Number(x.targetMargin??20));
   $("adminDirectMarkup").value=Number(x.directMarkup??15);
-  $("adminFullSizeMarkup").value=Number(x.fullSizeMarkup??15);
+  ensureFullSizeMarkupOption(Number(x.fullSizeMarkup??15));
+  $("adminFullSizeMarkup").value=String(Number(x.fullSizeMarkup??15));
   $("adminRoundTo").value=Number(x.roundTo??1000);
   adminLoadedExisting=!!existing;
   adminOriginalName=existing?String(x.name||"").trim():"";
@@ -2110,7 +2071,6 @@ function processLiveSheetResponse(resp){
     renderSavedPicker();
     renderAdminPicker();
     renderBundlePickers();
-    if(typeof renderLabelPerfumePicker==="function") renderLabelPerfumePicker();
     updateAdminLiveBadge();
     updateBundleLiveBadge();
     checkAdminPending();
@@ -2180,6 +2140,7 @@ function refreshLiveSheet(force=false){
 
 
 syncPackCostToSelectedSize({showNote:false});
+restoreFullSizeMargin();
 migrateLegacySaved();
 
 // First-run starter data: the 13 perfumes from the user's backup.
@@ -2219,168 +2180,9 @@ window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferredPro
 $("installBtn").addEventListener("click",async()=>{if(!deferredPrompt)return;deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;$("installBtn").classList.add("hidden");});
 
 
-$("pricingModule").classList.remove("hidden"); $("creditModule").classList.add("hidden"); if($("bundleModule")) $("bundleModule").classList.add("hidden"); if($("adminModule")) $("adminModule").classList.add("hidden"); if($("labelModule")) $("labelModule").classList.add("hidden"); updateModeUI();calculate();renderSaved();renderSavedPicker();renderAdminPicker();renderBundlePickers();syncBundleBottleCost();calculateBundle();updateAdminLiveBadge();updateBundleLiveBadge();
+$("pricingModule").classList.remove("hidden"); $("creditModule").classList.add("hidden"); if($("bundleModule")) $("bundleModule").classList.add("hidden"); if($("adminModule")) $("adminModule").classList.add("hidden"); updateModeUI();calculate();renderSaved();renderSavedPicker();renderAdminPicker();renderBundlePickers();syncBundleBottleCost();calculateBundle();updateAdminLiveBadge();updateBundleLiveBadge();
 window.loadItem=loadItem;window.deleteItem=deleteItem;
 window.getSavedPerfumes=getSaved;
-
-
-// ---------------- BIG INS Label Studio (V31) ----------------
-const LABEL_PROFILE_KEY="perfumeCalcV31LabelProfiles";
-const LABEL_MM_PER_IN=25.4;
-let labelSelectedMl=10;
-let labelLogoImg=new Image();
-labelLogoImg.src='data:image/png;base64,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';
-
-const LABEL_KNOWN=[
-  {re:/jean\s*paul|gaultier|\bjpg\b|le\s*male/i,l1:"Jean Paul",l2:"GAULTIER",l3:"LE MALE",l4:"LE PARFUM"},
-  {re:/hawas\s*ice/i,l1:"RASASI",l2:"HAWAS",l3:"ICE",l4:"EAU DE PARFUM"},
-  {re:/hawas/i,l1:"RASASI",l2:"HAWAS",l3:"FOR HIM",l4:"EAU DE PARFUM"},
-  {re:/khamrah.*qahwa|qahwa.*khamrah/i,l1:"LATTAFA",l2:"KHAMRAH",l3:"QAHWA",l4:"EAU DE PARFUM"},
-  {re:/khamrah/i,l1:"LATTAFA",l2:"KHAMRAH",l3:"",l4:"EAU DE PARFUM"},
-  {re:/sauvage/i,l1:"DIOR",l2:"SAUVAGE",l3:"",l4:"EAU DE PARFUM"},
-  {re:/bleu.*chanel|chanel.*bleu/i,l1:"CHANEL",l2:"BLEU",l3:"DE CHANEL",l4:"EAU DE PARFUM"},
-  {re:/versace.*eros|eros/i,l1:"VERSACE",l2:"EROS",l3:"",l4:"EAU DE PARFUM"}
-];
-
-function labelReadProfiles(){try{const x=JSON.parse(localStorage.getItem(LABEL_PROFILE_KEY)||"{}");return x&&typeof x==="object"?x:{};}catch{return {};}}
-function labelWriteProfiles(x){try{localStorage.setItem(LABEL_PROFILE_KEY,JSON.stringify(x));return true;}catch{return false;}}
-function labelKey(s){return String(s||"").trim().toLowerCase();}
-function labelAutoProfile(name){
-  const raw=String(name||"").trim();
-  const known=LABEL_KNOWN.find(x=>x.re.test(raw));
-  if(known) return {l1:known.l1,l2:known.l2,l3:known.l3,l4:known.l4};
-  const cleaned=raw.replace(/\b(1|2|3|5|8|10|15|20|30|50)\s*ml\b/ig,"").replace(/[•|_/]+/g," ").replace(/\s+/g," ").trim();
-  const words=cleaned.split(" ").filter(Boolean);
-  if(!words.length) return {l1:"PERFUME",l2:"",l3:"",l4:"EAU DE PARFUM"};
-  if(words.length===1) return {l1:words[0].toUpperCase(),l2:"",l3:"",l4:"EAU DE PARFUM"};
-  if(words.length===2) return {l1:words[0].toUpperCase(),l2:words[1].toUpperCase(),l3:"",l4:"EAU DE PARFUM"};
-  const cut=Math.min(2,Math.ceil(words.length/2));
-  return {l1:words.slice(0,cut).join(" ").toUpperCase(),l2:words.slice(cut).join(" ").toUpperCase(),l3:"",l4:"EAU DE PARFUM"};
-}
-function labelCurrentPerfumeName(){return String($("labelPerfumeSelect")?.value||$("name")?.value||"").trim();}
-function labelSetStatus(text,type=""){const el=$("labelStatus");if(!el)return;el.textContent=text||"";el.className="label-status"+(type?" "+type:"");}
-function labelGetMl(){const custom=Number($("labelCustomMl")?.value||0);return Number.isFinite(custom)&&custom>0?custom:labelSelectedMl;}
-function labelMmPx(mm,dpi){return mm/LABEL_MM_PER_IN*dpi;}
-function labelFontFamily(){const v=$("labelFontStyle")?.value||"classic";if(v==="condensed")return 'Arial Narrow,Arial,sans-serif';if(v==="clean")return 'Arial,Helvetica,sans-serif';if(v==="bold")return 'Impact,Arial Black,Arial,sans-serif';return 'Georgia,Times New Roman,serif';}
-function labelFitText(ctx,text,maxW,start,min,weight,fam){let fs=start;const safe=String(text||"");while(fs>min){ctx.font=`${weight||700} ${fs}px ${fam||labelFontFamily()}`;if(ctx.measureText(safe).width<=maxW)break;fs-=1;}return Math.max(min,fs);}
-function labelGetSettings(){
-  const w=Math.max(15,Math.min(100,Number($("labelWidthMm")?.value||40)));
-  const h=Math.max(10,Math.min(100,Number($("labelHeightMm")?.value||20)));
-  return {w,h,dpi:Number($("labelDpi")?.value||203),logo:Number($("labelLogoScale")?.value||95)/100,text:Number($("labelTextScale")?.value||100)/100,margin:Math.max(0,Number($("labelMarginMm")?.value||0.6)),x:Number($("labelXOffset")?.value||0),y:Number($("labelYOffset")?.value||0),thermal:!!$("labelThermal")?.checked,density:Number($("labelDensity")?.value||180)};
-}
-function labelSetFields(p){["1","2","3","4"].forEach(i=>{const el=$("labelLine"+i);if(el) el.value=p?.["l"+i]||"";});}
-function labelGetFields(){return {l1:$("labelLine1")?.value||"",l2:$("labelLine2")?.value||"",l3:$("labelLine3")?.value||"",l4:$("labelLine4")?.value||""};}
-function labelLoadProfileFor(name,forceAuto=false){
-  const profiles=labelReadProfiles(), key=labelKey(name);
-  const p=!forceAuto&&profiles[key]?profiles[key]:labelAutoProfile(name);
-  labelSetFields(p); renderLabelPreview();
-}
-function renderLabelPerfumePicker(){
-  const sel=$("labelPerfumeSelect");if(!sel)return;
-  const items=typeof getPerfumeCatalog==="function"?getPerfumeCatalog():[];
-  const prev=sel.value;
-  sel.innerHTML="";
-  items.forEach(x=>{const o=document.createElement("option");o.value=String(x.name||"");o.textContent=String(x.name||"Perfume");sel.appendChild(o);});
-  const current=String($("name")?.value||"").trim();
-  if(items.some(x=>String(x.name||"")===prev)) sel.value=prev;
-  else if(items.some(x=>String(x.name||"")===current)) sel.value=current;
-  else if(items.length) sel.value=String(items[0].name||"");
-  const badge=$("labelCatalogBadge");if(badge){badge.textContent=`${liveSheetReady?"LIVE":"LOCAL"} • ${items.length}`;badge.className="live-badge "+(liveSheetReady?"online":"offline");}
-  if(sel.value) labelLoadProfileFor(sel.value,false);
-}
-function syncLabelFromCalculator(){
-  const ml=Number($("decantMl")?.value||0);if(Number.isFinite(ml)&&ml>0){labelSelectedMl=ml;$("labelCustomMl").value="";}
-  document.querySelectorAll("#labelMlButtons button").forEach(b=>b.classList.toggle("active",Number(b.dataset.labelMl)===labelSelectedMl));
-}
-function renderLabelPreview(){
-  const c=$("labelCanvas");if(!c)return;
-  const ctx=c.getContext("2d",{alpha:false}), s=labelGetSettings();
-  const W=Math.max(80,Math.round(labelMmPx(s.w,s.dpi))), H=Math.max(60,Math.round(labelMmPx(s.h,s.dpi)));
-  c.width=W;c.height=H;ctx.fillStyle="#fff";ctx.fillRect(0,0,W,H);ctx.fillStyle="#000";ctx.textBaseline="middle";
-  const pxmm=s.dpi/LABEL_MM_PER_IN, margin=Math.max(2,s.margin*pxmm), ox=s.x*pxmm, oy=s.y*pxmm;
-  const fields=labelGetFields();const ml=`${labelGetMl()}ml`;
-  const showLogo=!!$("labelShowLogo")?.checked, showDiv=!!$("labelShowDivider")?.checked;
-  const scale=Math.min(W/320,H/160);const textScale=s.text;
-  let logoW=showLogo?Math.min(W*.24,75*scale*s.logo):0;
-  const mlW=Math.min(W*.21,68*scale);
-  const dividerGap=showDiv?Math.max(4,5*scale):0;
-  const contentX=margin+logoW+(showLogo?Math.max(5,8*scale):0)+ox;
-  const contentRight=W-margin-mlW-dividerGap+ox;
-  const contentW=Math.max(60,contentRight-contentX);
-  const centerX=contentX+contentW/2;
-  const cy=H/2+oy;
-
-  // BIG INS logo block (no outer label border)
-  if(showLogo){
-    const lx=margin+ox, ly=margin+oy, lh=H-2*margin;
-    const textH=Math.max(9,15*scale*s.logo), imageH=Math.max(20,lh-textH-2*scale);
-    if(labelLogoImg.complete&&labelLogoImg.naturalWidth){
-      const r=labelLogoImg.naturalWidth/labelLogoImg.naturalHeight;
-      let dw=Math.min(logoW,imageH*r), dh=dw/r;
-      if(dh>imageH){dh=imageH;dw=dh*r;}
-      ctx.drawImage(labelLogoImg,lx+(logoW-dw)/2,ly,Math.max(1,dw),Math.max(1,dh));
-    }else{
-      ctx.save();ctx.translate(lx+logoW*.08,ly+imageH*.05);ctx.fillRect(logoW*.05,imageH*.55,logoW*.55,imageH*.35);ctx.beginPath();ctx.arc(logoW*.62,imageH*.58,logoW*.19,0,Math.PI*2);ctx.fill();ctx.restore();
-    }
-    ctx.font=`800 ${textH}px Arial,Helvetica,sans-serif`;ctx.textAlign="center";ctx.fillText("BIG INS",lx+logoW/2,ly+lh-textH*.45);
-  }
-
-  // ml block + divider
-  if(showDiv){ctx.fillRect(W-margin-mlW-dividerGap+ox,margin+oy,Math.max(1,1.2*scale),H-2*margin);}
-  const mlFs=labelFitText(ctx,ml,mlW,Math.max(20,31*scale*textScale),10,900,'Arial Black,Arial,sans-serif');
-  ctx.font=`900 ${mlFs}px Arial Black,Arial,sans-serif`;ctx.textAlign="center";ctx.fillText(ml,W-margin-mlW/2+ox,cy);
-
-  const lines=[fields.l1,fields.l2,fields.l3,fields.l4].filter(v=>String(v).trim()!=="");
-  const n=lines.length||1;const base=H/(n+1.2);let positions=[];
-  if(n===4) positions=[cy-H*.31,cy-H*.10,cy+H*.12,cy+H*.32];
-  else if(n===3) positions=[cy-H*.23,cy,cy+H*.24];
-  else if(n===2) positions=[cy-H*.13,cy+H*.16];
-  else positions=[cy];
-  ctx.textAlign="center";
-  lines.forEach((text,i)=>{
-    let factor=i===1?1.28:(i===0?1.03:.82);if(n<4&&i===0)factor=1.12;
-    const start=Math.max(13,H*.18*factor*textScale);const min=Math.max(7,H*.07);
-    const weight=i===1?900:800;const fam=i===1?'Impact,Arial Black,Arial,sans-serif':labelFontFamily();
-    const fs=labelFitText(ctx,String(text).toUpperCase(),contentW,start,min,weight,fam);
-    ctx.font=`${weight} ${fs}px ${fam}`;ctx.fillText(String(text).toUpperCase(),centerX,positions[i]||cy);
-  });
-  // line above bottom fragrance descriptor for separation
-  if(lines.length>=4){const y=cy+H*.21;ctx.fillRect(contentX+contentW*.08,y,contentW*.84,Math.max(1,.9*scale));}
-
-  if(s.thermal){
-    const img=ctx.getImageData(0,0,W,H),d=img.data,threshold=Math.max(70,Math.min(235,s.density));
-    for(let i=0;i<d.length;i+=4){const lum=.299*d[i]+.587*d[i+1]+.114*d[i+2];const v=lum<threshold?0:255;d[i]=d[i+1]=d[i+2]=v;d[i+3]=255;}
-    ctx.putImageData(img,0,0);
-  }
-  const meta=$("labelMeta");if(meta)meta.textContent=`${s.w}×${s.h} mm • ${s.dpi} DPI • ${W}×${H} px • ${ml}`;
-}
-function labelDownloadPng(){
-  try{renderLabelPreview();const c=$("labelCanvas"),a=document.createElement("a");const name=labelCurrentPerfumeName()||"perfume";a.download=`${name.replace(/[^a-z0-9]+/gi,"-").replace(/^-|-$/g,"")||"perfume"}-${labelGetMl()}ml-${$("labelWidthMm").value}x${$("labelHeightMm").value}.png`;a.href=c.toDataURL("image/png");document.body.appendChild(a);a.click();a.remove();labelSetStatus("PNG saved", "good");}catch(e){labelSetStatus("PNG save မရပါ: "+e.message,"error");}
-}
-async function labelSharePng(){
-  try{renderLabelPreview();const c=$("labelCanvas");const blob=await new Promise(r=>c.toBlob(r,"image/png"));if(!blob)throw new Error("PNG create failed");const file=new File([blob],"big-ins-label.png",{type:"image/png"});if(navigator.share&&(!navigator.canShare||navigator.canShare({files:[file]}))){await navigator.share({files:[file],title:"BIG INS Label"});labelSetStatus("Share sheet opened","good");}else{labelDownloadPng();labelSetStatus("Share မရလို့ PNG save လုပ်ပေးထားပါတယ်","good");}}catch(e){if(e?.name!=="AbortError")labelSetStatus("Share မရပါ: "+e.message,"error");}
-}
-function labelPrint(){
-  try{renderLabelPreview();const c=$("labelCanvas"),s=labelGetSettings(),data=c.toDataURL("image/png");const win=window.open("","_blank");if(!win){labelSetStatus("Print popup block ဖြစ်နေပါတယ် — browser Pop-ups ကို Allow လုပ်ပါ","error");return;}
-    win.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>BIG INS Label</title><style>@page{size:${s.w}mm ${s.h}mm;margin:0}html,body{margin:0;padding:0;width:${s.w}mm;height:${s.h}mm;overflow:hidden}img{display:block;width:${s.w}mm;height:${s.h}mm;object-fit:fill}</style></head><body><img src="${data}" onload="setTimeout(()=>window.print(),180)"></body></html>`);win.document.close();labelSetStatus("Print window opened","good");
-  }catch(e){labelSetStatus("Print မရပါ: "+e.message,"error");}
-}
-function initLabelStudio(){
-  const ids=["labelLine1","labelLine2","labelLine3","labelLine4","labelCustomMl","labelWidthMm","labelHeightMm","labelFontStyle","labelDpi","labelLogoScale","labelTextScale","labelShowLogo","labelShowDivider","labelThermal","labelXOffset","labelYOffset","labelMarginMm","labelDensity"];
-  ids.forEach(id=>{const el=$(id);if(!el)return;el.addEventListener(el.type==="range"||el.type==="checkbox"||el.tagName==="SELECT"?"change":"input",renderLabelPreview);if(el.type==="range")el.addEventListener("input",renderLabelPreview);});
-  $("labelPerfumeSelect")?.addEventListener("change",e=>labelLoadProfileFor(e.target.value,false));
-  $("labelUseCurrentBtn")?.addEventListener("click",()=>{const current=String($("name")?.value||"").trim();renderLabelPerfumePicker();if(current&&Array.from($("labelPerfumeSelect")?.options||[]).some(o=>o.value===current))$("labelPerfumeSelect").value=current;syncLabelFromCalculator();labelLoadProfileFor($("labelPerfumeSelect")?.value||current,false);});
-  $("labelSaveProfileBtn")?.addEventListener("click",()=>{const name=labelCurrentPerfumeName();if(!name){labelSetStatus("Perfume ရွေးပါ","error");return;}const p=labelReadProfiles();p[labelKey(name)]=labelGetFields();if(labelWriteProfiles(p))labelSetStatus(`“${name}” label info saved`,"good");else labelSetStatus("Save မရပါ","error");});
-  $("labelResetProfileBtn")?.addEventListener("click",()=>{const name=labelCurrentPerfumeName();labelLoadProfileFor(name,true);labelSetStatus("Perfume name ကနေ Auto Name ပြန်လုပ်ထားပါတယ်","good");});
-  document.querySelectorAll("#labelMlButtons button").forEach(b=>b.addEventListener("click",()=>{labelSelectedMl=Number(b.dataset.labelMl)||10;$("labelCustomMl").value="";document.querySelectorAll("#labelMlButtons button").forEach(x=>x.classList.toggle("active",x===b));renderLabelPreview();}));
-  document.querySelectorAll("#labelSizePresets button").forEach(b=>b.addEventListener("click",()=>{$("labelWidthMm").value=b.dataset.lw;$("labelHeightMm").value=b.dataset.lh;document.querySelectorAll("#labelSizePresets button").forEach(x=>x.classList.toggle("active",x===b));document.querySelectorAll("#labelOrientation button").forEach(x=>x.classList.toggle("active",x.dataset.labelOrientation==="h"));renderLabelPreview();}));
-  document.querySelectorAll("#labelOrientation button").forEach(b=>b.addEventListener("click",()=>{let w=Number($("labelWidthMm").value||40),h=Number($("labelHeightMm").value||20);const want=b.dataset.labelOrientation;if(want==="h"&&h>w){const t=w;w=h;h=t;}if(want==="v"&&w>h){const t=w;w=h;h=t;}$("labelWidthMm").value=w;$("labelHeightMm").value=h;document.querySelectorAll("#labelOrientation button").forEach(x=>x.classList.toggle("active",x===b));renderLabelPreview();}));
-  $("labelPreviewResetBtn")?.addEventListener("click",()=>{$("labelWidthMm").value=40;$("labelHeightMm").value=20;$("labelDpi").value=203;$("labelLogoScale").value=95;$("labelTextScale").value=100;$("labelXOffset").value=0;$("labelYOffset").value=0;$("labelMarginMm").value=.6;$("labelThermal").checked=true;document.querySelectorAll("#labelSizePresets button").forEach(b=>b.classList.toggle("active",b.dataset.lw==="40"&&b.dataset.lh==="20"));document.querySelectorAll("#labelOrientation button").forEach(b=>b.classList.toggle("active",b.dataset.labelOrientation==="h"));renderLabelPreview();});
-  $("labelPngBtn")?.addEventListener("click",labelDownloadPng);$("labelShareBtn")?.addEventListener("click",labelSharePng);$("labelPrintBtn")?.addEventListener("click",labelPrint);
-  labelLogoImg.onload=renderLabelPreview;
-  renderLabelPerfumePicker();syncLabelFromCalculator();renderLabelPreview();
-}
-initLabelStudio();
 
 // ---------------- Credit Sales Ledger ----------------
 const CREDIT_KEY = "perfumeCalcV5Credits";
@@ -2473,6 +2275,63 @@ function extractCreditArrayFromStorageValue(key,raw){
   return [];
 }
 
+const CREDIT_BACKUP_RECOVERY_PACK = [
+  {
+    customer:"hsu thet zun",
+    contact:"",
+    item:"hawas for him",
+    amount:27000,
+    saleDate:"2026-09-03",
+    note:"",
+    status:"unpaid",
+    paidAt:null
+  },
+  {
+    customer:"hsu thet zun",
+    contact:"",
+    item:"angham",
+    amount:24000,
+    saleDate:"2026-09-01",
+    note:"",
+    status:"unpaid",
+    paidAt:null
+  },
+  {
+    customer:"HSU THET ZUN",
+    contact:"",
+    item:"YARA CANDY 10MLL",
+    amount:22000,
+    saleDate:"2026-09-01",
+    note:"",
+    status:"unpaid",
+    paidAt:null
+  },
+  {
+    customer:"MA THU ZAR LIN",
+    contact:"",
+    item:"ANGHAM 10ML",
+    amount:24000,
+    saleDate:"2026-08-12",
+    note:"",
+    status:"paid",
+    paidAt:"2026-09-01"
+  }
+];
+
+function recoverBackupCreditPack(existingMap, fingerprints){
+  let added=0;
+  CREDIT_BACKUP_RECOVERY_PACK.forEach(v=>{
+    const x=normalizeLegacyCredit(v);
+    if(!x) return;
+    const fp=creditFingerprint(x);
+    if(existingMap.has(x.id) || fingerprints.has(fp)) return;
+    existingMap.set(x.id,x);
+    fingerprints.add(fp);
+    added++;
+  });
+  return added;
+}
+
 function recoverLegacyCredits({silent=false}={}){
   const current=readCurrentCreditsRaw().map(normalizeLegacyCredit).filter(Boolean);
   const merged=new Map();
@@ -2544,6 +2403,11 @@ function recoverLegacyCredits({silent=false}={}){
     }
   }catch{}
 
+  // V30.4 fallback: merge the user's previously backed-up Credit Sale records.
+  // This only adds missing records and will not duplicate existing ones.
+  const backupAdded=recoverBackupCreditPack(merged,fingerprints);
+  added += backupAdded;
+
   const result=Array.from(merged.values())
     .sort((a,b)=>String(b.createdAt||b.saleDate||"").localeCompare(String(a.createdAt||a.saleDate||"")))
     .slice(0,1000);
@@ -2557,7 +2421,7 @@ function recoverLegacyCredits({silent=false}={}){
 
   if(!silent){
     renderCredits();
-    if(added>0) creditMsg(`အရင် Credit Sale ${added} ခု ပြန်ထည့်ပြီးပါပြီ။`,"success");
+    if(added>0) creditMsg(`Credit Sale ${added} ခု ပြန်ယူပြီးပါပြီ။ Paid record တွေကို Paid/All filter မှာကြည့်နိုင်ပါတယ်။`,"success");
     else if(result.length>0) creditMsg("Credit Sale data ရှိပြီးသားပါ။ ထပ်မပွားအောင်ထားပါတယ်။","success");
     else creditMsg("ဒီ browser/device ထဲမှာ အရင် Credit Sale data မတွေ့ပါ။","error");
   }
@@ -2690,7 +2554,11 @@ if($("recoverOldCredits")) $("recoverOldCredits").addEventListener("click",()=>r
 
 // Auto-recover old-version Credit Sale on the SAME website/domain/browser.
 // Credit data stays local/private; it is never sent to Google Sheet or LIVE database.
-recoverLegacyCredits({silent:true});
+const creditRecoveryResult=recoverLegacyCredits({silent:true});
+if(creditRecoveryResult.total>0){
+  creditFilter="all";
+  document.querySelectorAll(".filter-btn").forEach(b=>b.classList.toggle("active",b.dataset.filter==="all"));
+}
 renderCredits();
 window.setCreditPaid=setCreditPaid;
 window.deleteCredit=deleteCredit;

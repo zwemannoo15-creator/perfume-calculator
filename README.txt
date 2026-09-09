@@ -1,11 +1,17 @@
-Perfume Calculator FINAL V30.3 — CREDIT RESTORED
+Perfume Calculator FINAL V30.4 — FULL SIZE MARGIN FIX
 
-Credit Sale fix:
-- Keeps existing current credits.
-- Searches legacy localStorage keys.
-- Merges the user's previously backed-up 4 Credit Sale records.
-- De-duplicates records by ID/fingerprint.
-- Opens Credit list on ALL filter so paid + unpaid restored records are visible.
-- Credit data remains local/private and is not sent to Google Sheet/LIVE DB.
+FIXED:
+- Full Size Margin is now an easy dropdown: 10, 11, 12, 13, 14, 15% + Custom.
+- Custom supports decimal margins within 10–15% (example 12.5%).
+- Full Size margin is remembered in this browser.
+- Loading another perfume does NOT reset the Full Size margin.
+- LIVE Sheet refresh does NOT overwrite the Full Size margin.
+- Formula remains:
+  Full Bottle Cost + Full Size Margin + Delivery 5,000 Ks.
 
-Bundle rounded-price feature and all prior features are preserved.
+PRESERVED:
+- Bundle Set + Rounded Price
+- Credit Sale recovery/restored records
+- LIVE perfume catalog
+- Direct / Consignment / Full Size separation
+- Bottle-size cost memory
