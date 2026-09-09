@@ -7,7 +7,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
-  <!-- V30.6.1 FINAL: hardened single-file build -->
+  <!-- V30.7.1 FINAL: hardened single-file build -->
 <title>Perfume Calculator • LIVE</title>
   <style>
 *{box-sizing:border-box}
@@ -211,7 +211,7 @@ body{min-height:100vh;min-height:100dvh}button,input{font:inherit}button{cursor:
         <label class="fullsize-only hidden">
           <span>Full Size Margin (%)</span>
           <input id="fullSizeMarginInput" type="number" min="0" max="100" step="0.5" value="15" />
-          <small style="color:var(--muted);font-size:11px">ဒီ value ကို တိုက်ရိုက်တွက်မယ် • ဥပမာ 10 / 12.5 / 15%</small>
+          <small style="color:var(--muted);font-size:11px">ဒီ value ကို တိုက်ရိုက်တွက်မယ် • Perfume Load / Admin Save လုပ်ရင် အဲ့ perfume ရဲ့ saved margin ဝင်မယ်</small>
         </label>
 
         <label class="fullsize-only hidden">
@@ -517,7 +517,7 @@ body{min-height:100vh;min-height:100dvh}button,input{font:inherit}button{cursor:
             <input id="adminDirectMarkup" type="number" min="0" max="100" step="0.5" value="15" />
             <small id="adminDirectMarginHint" style="color:var(--muted);font-size:11px">Admin မှာ တိုက်ရိုက်ပြင်နိုင်ပါတယ်။ UAE အသစ်ဆို 30% default ပေးမယ်၊ လိုရင်ပြောင်းနိုင်ပါတယ်။</small>
           </label>
-          <label id="adminFullSizeMarkupField" class="admin-fullsize-field"><span>Full Size Margin (%)</span>
+          <label id="adminFullSizeMarkupField" class="admin-fullsize-field"><span>Full Size Margin (%) — Save per perfume</span>
             <input id="adminFullSizeMarkup" type="number" min="0" max="100" step="0.5" value="15" />
             <small style="color:var(--muted);font-size:11px">Admin မှာ တိုက်ရိုက်ပြင်နိုင်ပါတယ်။</small>
           </label>
@@ -596,7 +596,7 @@ body{min-height:100vh;min-height:100dvh}button,input{font:inherit}button{cursor:
 
 
 
-    <footer><p>Perfume Calculator V30.6 FINAL • In-App Admin • Google Sheet LIVE • Single-file</p></footer>
+    <footer><p>Perfume Calculator V30.7 FINAL • In-App Admin • Google Sheet LIVE • Single-file</p></footer>
   </main>
 
   <script>
@@ -697,6 +697,17 @@ function applyRemotePerfumeToPricing(match,{force=false}={}){
   ["fullPrice","bottleMl","wastage","consignment","targetMargin","directMarkup","roundTo"].forEach(k=>{
     if(match[k]!==undefined && $(k)) $(k).value=match[k];
   });
+
+  // Background LIVE sync must never reset the Full Size margin while editing.
+  // A force=true apply happens only after an explicit confirmed Admin Save.
+  if(force && match.fullSizeMarkup!==undefined && $("fullSizeMarginInput")){
+    const savedMargin=Number(match.fullSizeMarkup);
+    if(Number.isFinite(savedMargin)){
+      $("fullSizeMarginInput").value=String(savedMargin);
+      rememberFullSizeMargin();
+    }
+  }
+
   syncPackCostToSelectedSize({showNote:false});
   calculate();
   markPricingClean(match.name);
@@ -816,7 +827,7 @@ function calculate(){
   if(mode==="fullsize"){
     const r=calcFullSize();
     $("recommended").textContent=ks(r.recommended);
-    $("targetPrice").textContent=`Cost + ${r.markupPct}% + Deli ${ks(r.deliveryCharge)}`;
+    $("targetPrice").textContent=`USING ${r.markupPct}% MARGIN • + Deli ${ks(r.deliveryCharge)}`;
     $("fullSizeCost").textContent=ks(r.fullPrice);
     $("fullSizeMarkupLabel").textContent=`Margin Profit (${r.markupPct}%)`;
     $("fullSizeProfit").textContent=ks(r.markupAmount);
@@ -1324,6 +1335,14 @@ function loadItem(i){
   ["fullPrice","bottleMl","wastage","consignment","targetMargin","directMarkup","roundTo"].forEach(k=>{
     if(x[k]!==undefined&&$(k)) $(k).value=x[k];
   });
+  // Explicit Load = use this perfume's saved Full Size margin.
+  if(x.fullSizeMarkup!==undefined && $("fullSizeMarginInput")){
+    const savedMargin=Number(x.fullSizeMarkup);
+    if(Number.isFinite(savedMargin)){
+      $("fullSizeMarginInput").value=String(savedMargin);
+      rememberFullSizeMargin();
+    }
+  }
   syncPackCostToSelectedSize({showNote:false});
 
   mode=currentMode;
@@ -1513,7 +1532,7 @@ $("loadSelectedBtn").addEventListener("click",()=>{
 if($("clearSaved")) $("clearSaved").addEventListener("click",()=>window.open(SHEET_EDIT_URL,"_blank","noopener"));
 
 function exportBackup(){
-  const payload={app:"Perfume Calculator",version:30.6,exportedAt:new Date().toISOString(),savedPerfumes:getSaved(),creditSales:typeof getCredits==="function"?getCredits():[]};
+  const payload={app:"Perfume Calculator",version:30.7,exportedAt:new Date().toISOString(),savedPerfumes:getSaved(),creditSales:typeof getCredits==="function"?getCredits():[]};
   const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
   const url=URL.createObjectURL(blob), a=document.createElement("a");
   a.href=url; a.download=`perfume-calculator-backup-${todayLocal()}.json`; document.body.appendChild(a); a.click(); a.remove();
@@ -1788,7 +1807,7 @@ async function checkAdminPending(){
         }
       }else if(!renamed){
         lastPricingMode=p.baseMode;
-        finishAdminSuccess(`✅ ${p.name} LIVE Save အောင်မြင်ပြီ • Mode = ${p.baseMode==="fullsize"?"Full Size":p.baseMode==="direct"?"Direct":"Consignment"}။`,{name:p.name});
+        finishAdminSuccess(`✅ ${p.name} LIVE Save အောင်မြင်ပြီ • Margins: Consignment ${p.targetMargin}% • Direct ${p.directMarkup}% • Full Size ${p.fullSizeMarkup}%`,{name:p.name});
       }
     }
   }else if(pending.type==="rename-delete"){
@@ -1797,7 +1816,7 @@ async function checkAdminPending(){
     if(!exists){
       const p=pending.payload;
       lastPricingMode=p.baseMode;
-      finishAdminSuccess(`✅ ${p.name} LIVE Save / Rename အောင်မြင်ပြီ • Mode = ${p.baseMode==="fullsize"?"Full Size":p.baseMode==="direct"?"Direct":"Consignment"}။`,{name:p.name});
+      finishAdminSuccess(`✅ ${p.name} LIVE Save / Rename အောင်မြင်ပြီ • Full Size Margin ${p.fullSizeMarkup}%`,{name:p.name});
     }
   }else if(pending.type==="delete"){
     const name=pending.name;
@@ -2306,7 +2325,7 @@ function recoverLegacyCredits({silent=false}={}){
     }
   }catch{}
 
-  // V30.6 fallback: merge the user's previously backed-up Credit Sale records.
+  // V30.7 fallback: merge the user's previously backed-up Credit Sale records.
   // This only adds missing records and will not duplicate existing ones.
   const backupAdded=recoverBackupCreditPack(merged,fingerprints);
   added += backupAdded;
