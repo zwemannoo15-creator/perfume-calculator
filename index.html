@@ -7,7 +7,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
-  <!-- V30.5.1 FINAL: hardened single-file build -->
+  <!-- V30.6.1 FINAL: hardened single-file build -->
 <title>Perfume Calculator • LIVE</title>
   <style>
 *{box-sizing:border-box}
@@ -510,27 +510,16 @@ body{min-height:100vh;min-height:100dvh}button,input{font:inherit}button{cursor:
           <label id="adminPackCostField" class="admin-decant-field hidden"><span>Decant Bottle + Pack (Ks)</span><input id="adminPackCost" type="number" min="0" step="100" /></label>
           <label id="adminConsignmentField" class="admin-consignment-field"><span>Consignment Fee (%)</span><input id="adminConsignment" type="number" min="0" max="99" step="0.5" /></label>
           <label id="adminTargetMarginField" class="admin-consignment-field"><span>Target Net Margin (%)</span>
-            <select id="adminTargetMargin">
-              <option value="10">10%</option><option value="15">15%</option><option value="20">20%</option>
-              <option value="25">25%</option><option value="30">30%</option><option value="35">35%</option>
-              <option value="40">40%</option><option value="45">45%</option><option value="50">50%</option>
-            </select>
-            <small id="adminMarginHint" style="color:var(--muted);font-size:11px">UAE = fixed 30%. DESIGNER / NICHE = choose margin.</small>
+            <input id="adminTargetMargin" type="number" min="0" max="99" step="0.5" value="20" />
+            <small id="adminMarginHint" style="color:var(--muted);font-size:11px">Admin မှာ တိုက်ရိုက်ပြင်နိုင်ပါတယ်။ UAE အသစ်ဆို 30% default ပေးမယ်၊ လိုရင်ပြောင်းနိုင်ပါတယ်။</small>
           </label>
-          <label id="adminDirectMarkupField" class="admin-direct-field"><span>Direct Markup (%)</span>
-            <select id="adminDirectMarkup">
-              <option value="10">10%</option><option value="15">15%</option><option value="20">20%</option>
-              <option value="25">25%</option><option value="30">30%</option><option value="35">35%</option>
-              <option value="40">40%</option><option value="45">45%</option><option value="50">50%</option>
-            </select>
-            <small id="adminDirectMarginHint" style="color:var(--muted);font-size:11px">UAE = fixed 30%. DESIGNER / NICHE = choose margin.</small>
+          <label id="adminDirectMarkupField" class="admin-direct-field"><span>Direct Margin (%)</span>
+            <input id="adminDirectMarkup" type="number" min="0" max="100" step="0.5" value="15" />
+            <small id="adminDirectMarginHint" style="color:var(--muted);font-size:11px">Admin မှာ တိုက်ရိုက်ပြင်နိုင်ပါတယ်။ UAE အသစ်ဆို 30% default ပေးမယ်၊ လိုရင်ပြောင်းနိုင်ပါတယ်။</small>
           </label>
-          <label id="adminFullSizeMarkupField" class="admin-fullsize-field"><span>Full Size Markup (%)</span>
-            <select id="adminFullSizeMarkup">
-              <option value="10">10%</option><option value="11">11%</option><option value="12">12%</option>
-              <option value="13">13%</option><option value="14">14%</option><option value="15">15%</option>
-            </select>
-            <small style="color:var(--muted);font-size:11px">Full Size has its own 10–15% rule.</small>
+          <label id="adminFullSizeMarkupField" class="admin-fullsize-field"><span>Full Size Margin (%)</span>
+            <input id="adminFullSizeMarkup" type="number" min="0" max="100" step="0.5" value="15" />
+            <small style="color:var(--muted);font-size:11px">Admin မှာ တိုက်ရိုက်ပြင်နိုင်ပါတယ်။</small>
           </label>
           <label id="adminRoundToField" class="admin-decant-field"><span>Round Price Up To (Ks)</span><input id="adminRoundTo" type="number" min="1" step="100" /></label>
         </div>
@@ -607,7 +596,7 @@ body{min-height:100vh;min-height:100dvh}button,input{font:inherit}button{cursor:
 
 
 
-    <footer><p>Perfume Calculator V30.5 FINAL • In-App Admin • Google Sheet LIVE • Single-file</p></footer>
+    <footer><p>Perfume Calculator V30.6 FINAL • In-App Admin • Google Sheet LIVE • Single-file</p></footer>
   </main>
 
   <script>
@@ -801,18 +790,7 @@ function restoreFullSizeMargin(){
   }catch{}
   if($("fullSizeMarginInput")) $("fullSizeMarginInput").value=String(v);
 }
-function ensureFullSizeMarkupOption(v){
-  const sel=$("adminFullSizeMarkup");
-  const n=Number(v);
-  if(!sel || !Number.isFinite(n) || n<0 || n>100) return;
-  const value=String(n);
-  if(!Array.from(sel.options).some(o=>o.value===value)){
-    const opt=document.createElement("option");
-    opt.value=value;
-    opt.textContent=`${n}%`;
-    sel.appendChild(opt);
-  }
-}
+function ensureFullSizeMarkupOption(value){ return; }
 
 function calcFullSize(){
   const fullPrice=n("fullPrice");
@@ -1330,7 +1308,6 @@ $("saveBtn").addEventListener("click",()=>{
       $("adminConsignment").value=n("consignment");
       $("adminTargetMargin").value=n("targetMargin");
       $("adminDirectMarkup").value=n("directMarkup");
-      ensureFullSizeMarkupOption(fullSizeMarginPct());
       $("adminFullSizeMarkup").value=String(fullSizeMarginPct());
       $("adminRoundTo").value=n("roundTo")||1000;
       $("adminMode").value=["consignment","direct","fullsize"].includes(lastPricingMode)?lastPricingMode:"consignment";
@@ -1536,7 +1513,7 @@ $("loadSelectedBtn").addEventListener("click",()=>{
 if($("clearSaved")) $("clearSaved").addEventListener("click",()=>window.open(SHEET_EDIT_URL,"_blank","noopener"));
 
 function exportBackup(){
-  const payload={app:"Perfume Calculator",version:30.5,exportedAt:new Date().toISOString(),savedPerfumes:getSaved(),creditSales:typeof getCredits==="function"?getCredits():[]};
+  const payload={app:"Perfume Calculator",version:30.6,exportedAt:new Date().toISOString(),savedPerfumes:getSaved(),creditSales:typeof getCredits==="function"?getCredits():[]};
   const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
   const url=URL.createObjectURL(blob), a=document.createElement("a");
   a.href=url; a.download=`perfume-calculator-backup-${todayLocal()}.json`; document.body.appendChild(a); a.click(); a.remove();
@@ -1627,22 +1604,8 @@ function renderAdminPicker(){
   }
   if($("adminDeleteBtn")) $("adminDeleteBtn").disabled=adminBusy || !adminLoadedExisting;
 }
-function ensureMarginOption(value){
-  const sel=$("adminTargetMargin"); if(!sel) return;
-  const n=Number(value); if(!Number.isFinite(n)) return;
-  const v=String(n);
-  if(!Array.from(sel.options).some(o=>o.value===v)){
-    const opt=document.createElement("option"); opt.value=v; opt.textContent=`${v}%`; sel.appendChild(opt);
-  }
-}
-function ensureDirectMarkupOption(value){
-  const sel=$("adminDirectMarkup"); if(!sel) return;
-  const n=Number(value); if(!Number.isFinite(n)) return;
-  const v=String(n);
-  if(!Array.from(sel.options).some(o=>o.value===v)){
-    const opt=document.createElement("option"); opt.value=v; opt.textContent=`${v}%`; sel.appendChild(opt);
-  }
-}
+function ensureMarginOption(value){ return; }
+function ensureDirectMarkupOption(value){ return; }
 function updateAdminModeUI(){
   const m=String($("adminMode")?.value||"consignment");
   const isCons=m==="consignment", isDirect=m==="direct", isFull=m==="fullsize";
@@ -1658,36 +1621,25 @@ function applyCategoryMargin({isNew=false}={}){
   const target=$("adminTargetMargin"), direct=$("adminDirectMarkup");
   const targetHint=$("adminMarginHint"), directHint=$("adminDirectMarginHint");
 
-  if(m==="consignment" && target){
-    if(category==="UAE"){
-      ensureMarginOption(30); target.value="30"; target.disabled=true;
-      if(targetHint) targetHint.textContent="UAE → Consignment Target Margin 30% fixed";
-    }else{
-      target.disabled=false;
-      if(isNew && !target.value) target.value="30";
-      if(targetHint) targetHint.textContent=category?`${category} → Consignment Margin ကိုရွေးနိုင်ပါတယ်`:`Category မသတ်မှတ်ရသေးပါ`;
-    }
-  }else if(target){
-    target.disabled=false;
+  // Admin is always editable. UAE only supplies a NEW-record default of 30%.
+  if(target) target.disabled=false;
+  if(direct) direct.disabled=false;
+  if($("adminFullSizeMarkup")) $("adminFullSizeMarkup").disabled=false;
+
+  if(isNew && category==="UAE"){
+    if(m==="consignment" && target) target.value="30";
+    if(m==="direct" && direct) direct.value="30";
   }
 
-  if(m==="direct" && direct){
-    if(category==="UAE"){
-      ensureDirectMarkupOption(30); direct.value="30"; direct.disabled=true;
-      if(directHint) directHint.textContent="UAE → Direct Markup 30% fixed";
-    }else{
-      direct.disabled=false;
-      if(isNew && !direct.value) direct.value="30";
-      if(directHint) directHint.textContent=category?`${category} → Direct Margin ကိုရွေးနိုင်ပါတယ်`:`Category မသတ်မှတ်ရသေးပါ`;
-    }
-  }else if(direct){
-    direct.disabled=false;
+  if(targetHint){
+    targetHint.textContent=category==="UAE"
+      ?"UAE default 30% • Admin မှာလိုသလိုပြောင်းနိုင်ပါတယ်"
+      :"Admin မှာ Margin ကို တိုက်ရိုက်ပြင်နိုင်ပါတယ်";
   }
-
-  // Full Size stays fully separate: its own 10–15% markup rule is preserved.
-  if(m==="fullsize" && $("adminFullSizeMarkup")){
-    const v=Number($("adminFullSizeMarkup").value);
-    if(!Number.isFinite(v) || v<10 || v>15) $("adminFullSizeMarkup").value="15";
+  if(directHint){
+    directHint.textContent=category==="UAE"
+      ?"UAE default 30% • Admin မှာလိုသလိုပြောင်းနိုင်ပါတယ်"
+      :"Admin မှာ Margin ကို တိုက်ရိုက်ပြင်နိုင်ပါတယ်";
   }
 }
 function adminFill(x,{existing=false}={}){
@@ -1700,10 +1652,8 @@ function adminFill(x,{existing=false}={}){
   $("adminWastage").value=Number(x.wastage??5);
   $("adminPackCost").value=Number(x.packCost??3600);
   $("adminConsignment").value=Number(x.consignment??15);
-  ensureMarginOption(Number(x.targetMargin??20));
   $("adminTargetMargin").value=String(Number(x.targetMargin??20));
-  $("adminDirectMarkup").value=Number(x.directMarkup??15);
-  ensureFullSizeMarkupOption(Number(x.fullSizeMarkup??15));
+  $("adminDirectMarkup").value=String(Number(x.directMarkup??15));
   $("adminFullSizeMarkup").value=String(Number(x.fullSizeMarkup??15));
   $("adminRoundTo").value=Number(x.roundTo??1000);
   adminLoadedExisting=!!existing;
@@ -1739,7 +1689,7 @@ function adminPayload(){
     mode:encodedMode, baseMode, category,
     fullPrice:num("adminFullPrice"), bottleMl:num("adminBottleMl"),
     wastage:num("adminWastage"), packCost:num("adminPackCost"), consignment:num("adminConsignment"),
-    targetMargin:category==="UAE"?30:num("adminTargetMargin"), directMarkup:num("adminDirectMarkup"),
+    targetMargin:num("adminTargetMargin"), directMarkup:num("adminDirectMarkup"),
     fullSizeMarkup:num("adminFullSizeMarkup"), roundTo:num("adminRoundTo"),
     originalName:adminOriginalName
   };
@@ -1761,11 +1711,9 @@ function validateAdminPayload(p){
   if(p.baseMode==="consignment"){
     if(!Number.isFinite(p.consignment) || p.consignment<0 || p.consignment>=100) return "Consignment Fee ကို 0% မှ 99% အတွင်းထားပါ။";
     if(!Number.isFinite(p.targetMargin) || p.targetMargin<0 || p.targetMargin>=100) return "Target Margin ကို 0% မှ 99% အတွင်းထားပါ။";
-    if(p.category==="UAE" && Number(p.targetMargin)!==30) return "UAE Consignment Margin က 30% fixed ဖြစ်ရမယ်။";
   }
   if(p.baseMode==="direct"){
     if(!Number.isFinite(p.directMarkup) || p.directMarkup<0 || p.directMarkup>100) return "Direct Markup ကို 0% မှ 100% အတွင်းထားပါ။";
-    if(p.category==="UAE" && Number(p.directMarkup)!==30) return "UAE Direct Margin က 30% fixed ဖြစ်ရမယ်။";
   }
   if(p.baseMode==="fullsize"){
     if(!Number.isFinite(p.fullSizeMarkup) || p.fullSizeMarkup<0 || p.fullSizeMarkup>100) return "Full Size Margin ကို 0% မှ 100% အတွင်းထားပါ။";
@@ -2358,7 +2306,7 @@ function recoverLegacyCredits({silent=false}={}){
     }
   }catch{}
 
-  // V30.5 fallback: merge the user's previously backed-up Credit Sale records.
+  // V30.6 fallback: merge the user's previously backed-up Credit Sale records.
   // This only adds missing records and will not duplicate existing ones.
   const backupAdded=recoverBackupCreditPack(merged,fingerprints);
   added += backupAdded;
