@@ -7,7 +7,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
-  <!-- V30.4.1 FINAL: hardened single-file build -->
+  <!-- V30.5.1 FINAL: hardened single-file build -->
 <title>Perfume Calculator • LIVE</title>
   <style>
 *{box-sizing:border-box}
@@ -210,21 +210,8 @@ body{min-height:100vh;min-height:100dvh}button,input{font:inherit}button{cursor:
 
         <label class="fullsize-only hidden">
           <span>Full Size Margin (%)</span>
-          <select id="fullSizeMarkup">
-            <option value="10">10%</option>
-            <option value="11">11%</option>
-            <option value="12">12%</option>
-            <option value="13">13%</option>
-            <option value="14">14%</option>
-            <option value="15" selected>15%</option>
-            <option value="custom">Custom %</option>
-          </select>
-          <small style="color:var(--muted);font-size:11px">10–15% အတွင်း လိုသလိုပြောင်းနိုင်ပါတယ်။ Perfume ပြောင်းလည်း ဒီ margin မပြန်ပြောင်းပါဘူး။</small>
-        </label>
-
-        <label id="fullSizeCustomMarkupWrap" class="fullsize-only hidden">
-          <span>Custom Full Size Margin (%)</span>
-          <input id="fullSizeCustomMarkup" type="number" min="10" max="15" step="0.1" value="12.5" />
+          <input id="fullSizeMarginInput" type="number" min="0" max="100" step="0.5" value="15" />
+          <small style="color:var(--muted);font-size:11px">ဒီ value ကို တိုက်ရိုက်တွက်မယ် • ဥပမာ 10 / 12.5 / 15%</small>
         </label>
 
         <label class="fullsize-only hidden">
@@ -291,7 +278,8 @@ body{min-height:100vh;min-height:100dvh}button,input{font:inherit}button{cursor:
 
       <div id="fullSizeStats" class="stats hidden">
         <div class="stat"><span>Full Bottle Cost</span><strong id="fullSizeCost">0 Ks</strong></div>
-        <div class="stat highlight"><span id="fullSizeMarkupLabel">Markup Profit</span><strong id="fullSizeProfit">0 Ks</strong></div>
+        <div class="stat highlight"><span id="fullSizeMarkupLabel">Margin Profit</span><strong id="fullSizeProfit">0 Ks</strong></div>
+        <div class="stat"><span>Margin Used</span><strong id="fullSizeMarginUsed">15%</strong></div>
         <div class="stat"><span>Price Before Deli</span><strong id="fullSizeBeforeDeli">0 Ks</strong></div>
         <div class="stat"><span>Delivery Charge</span><strong id="fullSizeDeli">5,000 Ks</strong></div>
       </div>
@@ -619,7 +607,7 @@ body{min-height:100vh;min-height:100dvh}button,input{font:inherit}button{cursor:
 
 
 
-    <footer><p>Perfume Calculator V30.4 FINAL • In-App Admin • Google Sheet LIVE • Single-file</p></footer>
+    <footer><p>Perfume Calculator V30.5 FINAL • In-App Admin • Google Sheet LIVE • Single-file</p></footer>
   </main>
 
   <script>
@@ -794,61 +782,34 @@ function calcDirect(sizeMl){
   return {...b,markupPct,roundTo,targetPrice,recommended,consignFee:0,netReceipt:recommended,netProfit,actualMargin,fullRevenue};
 }
 
-const FULLSIZE_MARGIN_KEY="perfumeFullSizeMarginV1";
+const FULLSIZE_MARGIN_KEY="perfumeFullSizeMarginV2";
 
 function fullSizeMarginPct(){
-  const choice=String($("fullSizeMarkup")?.value||"15");
-  let v;
-  if(choice==="custom") v=Number($("fullSizeCustomMarkup")?.value||15);
-  else v=Number(choice);
+  const el=$("fullSizeMarginInput");
+  let v=Number(el?.value);
   if(!Number.isFinite(v)) v=15;
-  return clamp(v,10,15);
+  return clamp(v,0,100);
 }
-
 function rememberFullSizeMargin(){
-  const v=fullSizeMarginPct();
-  try{ localStorage.setItem(FULLSIZE_MARGIN_KEY,String(v)); }catch{}
+  try{ localStorage.setItem(FULLSIZE_MARGIN_KEY,String(fullSizeMarginPct())); }catch{}
 }
-
-function setFullSizeMarginControl(value){
-  let v=Number(value);
-  if(!Number.isFinite(v)) v=15;
-  v=clamp(v,10,15);
-
-  const select=$("fullSizeMarkup");
-  const custom=$("fullSizeCustomMarkup");
-  const wrap=$("fullSizeCustomMarkupWrap");
-  if(!select) return;
-
-  const standard=[10,11,12,13,14,15];
-  const exact=standard.some(x=>Math.abs(x-v)<0.000001);
-  if(exact){
-    select.value=String(v);
-    if(wrap) wrap.classList.add("hidden");
-  }else{
-    select.value="custom";
-    if(custom) custom.value=String(v);
-    if(wrap) wrap.classList.toggle("hidden",mode!=="fullsize");
-  }
-}
-
 function restoreFullSizeMargin(){
-  let saved=15;
+  let v=15;
   try{
-    const v=Number(localStorage.getItem(FULLSIZE_MARGIN_KEY));
-    if(Number.isFinite(v)) saved=v;
+    const saved=Number(localStorage.getItem(FULLSIZE_MARGIN_KEY));
+    if(Number.isFinite(saved)) v=clamp(saved,0,100);
   }catch{}
-  setFullSizeMarginControl(saved);
+  if($("fullSizeMarginInput")) $("fullSizeMarginInput").value=String(v);
 }
-
 function ensureFullSizeMarkupOption(v){
   const sel=$("adminFullSizeMarkup");
   const n=Number(v);
-  if(!sel || !Number.isFinite(n) || n<10 || n>15) return;
+  if(!sel || !Number.isFinite(n) || n<0 || n>100) return;
   const value=String(n);
   if(!Array.from(sel.options).some(o=>o.value===value)){
     const opt=document.createElement("option");
-    opt.value=value; opt.textContent=`${n}%`;
+    opt.value=value;
+    opt.textContent=`${n}%`;
     sel.appendChild(opt);
   }
 }
@@ -879,11 +840,12 @@ function calculate(){
     $("recommended").textContent=ks(r.recommended);
     $("targetPrice").textContent=`Cost + ${r.markupPct}% + Deli ${ks(r.deliveryCharge)}`;
     $("fullSizeCost").textContent=ks(r.fullPrice);
-    $("fullSizeMarkupLabel").textContent=`Markup Profit (${r.markupPct}%)`;
+    $("fullSizeMarkupLabel").textContent=`Margin Profit (${r.markupPct}%)`;
     $("fullSizeProfit").textContent=ks(r.markupAmount);
+    $("fullSizeMarginUsed").textContent=`${r.markupPct}%`;
     $("fullSizeBeforeDeli").textContent=ks(r.beforeDeli);
     $("fullSizeDeli").textContent=ks(r.deliveryCharge);
-    $("formulaText").textContent=`Full Size Selling Price = Full Bottle Cost + ${r.markupPct}% markup + 5,000 Ks delivery.`;
+    $("formulaText").textContent=`Full Size Selling Price = Full Bottle Cost + (Full Bottle Cost × ${r.markupPct}%) + 5,000 Ks delivery.`;
     return {mode,...r};
   }
 
@@ -921,9 +883,6 @@ function updateModeUI(){
   document.querySelectorAll(".consignment-only").forEach(el=>el.classList.toggle("hidden",!isConsign));
   document.querySelectorAll(".direct-only").forEach(el=>el.classList.toggle("hidden",!isDirect));
   document.querySelectorAll(".fullsize-only").forEach(el=>el.classList.toggle("hidden",!isFull));
-  if($("fullSizeCustomMarkupWrap")){
-    $("fullSizeCustomMarkupWrap").classList.toggle("hidden",!isFull || $("fullSizeMarkup")?.value!=="custom");
-  }
   $("quickSizes").classList.toggle("hidden",isFull);
   $("decantStats").classList.toggle("hidden",isFull);
   $("mlPriceSection").classList.toggle("hidden",isFull);
@@ -968,20 +927,16 @@ ids.forEach(id=>{
   });
 });
 
-if($("fullSizeMarkup")) $("fullSizeMarkup").addEventListener("change",()=>{
-  const isCustom=$("fullSizeMarkup").value==="custom";
-  if($("fullSizeCustomMarkupWrap")){
-    $("fullSizeCustomMarkupWrap").classList.toggle("hidden",mode!=="fullsize" || !isCustom);
-  }
-  rememberFullSizeMargin();
-  markPricingDirty();
-  calculate();
-});
-if($("fullSizeCustomMarkup")) $("fullSizeCustomMarkup").addEventListener("input",()=>{
-  rememberFullSizeMargin();
-  markPricingDirty();
-  calculate();
-});
+
+if($("fullSizeMarginInput")){
+  const applyFullSizeMargin=()=>{
+    rememberFullSizeMargin();
+    markPricingDirty();
+    if(mode==="fullsize") calculate();
+  };
+  $("fullSizeMarginInput").addEventListener("input",applyFullSizeMargin);
+  $("fullSizeMarginInput").addEventListener("change",applyFullSizeMargin);
+}
 
 document.querySelectorAll(".seg").forEach(btn=>btn.addEventListener("click",()=>{
   const chosen=btn.dataset.mode;
@@ -1581,7 +1536,7 @@ $("loadSelectedBtn").addEventListener("click",()=>{
 if($("clearSaved")) $("clearSaved").addEventListener("click",()=>window.open(SHEET_EDIT_URL,"_blank","noopener"));
 
 function exportBackup(){
-  const payload={app:"Perfume Calculator",version:30.4,exportedAt:new Date().toISOString(),savedPerfumes:getSaved(),creditSales:typeof getCredits==="function"?getCredits():[]};
+  const payload={app:"Perfume Calculator",version:30.5,exportedAt:new Date().toISOString(),savedPerfumes:getSaved(),creditSales:typeof getCredits==="function"?getCredits():[]};
   const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
   const url=URL.createObjectURL(blob), a=document.createElement("a");
   a.href=url; a.download=`perfume-calculator-backup-${todayLocal()}.json`; document.body.appendChild(a); a.click(); a.remove();
@@ -1813,7 +1768,7 @@ function validateAdminPayload(p){
     if(p.category==="UAE" && Number(p.directMarkup)!==30) return "UAE Direct Margin က 30% fixed ဖြစ်ရမယ်။";
   }
   if(p.baseMode==="fullsize"){
-    if(!Number.isFinite(p.fullSizeMarkup) || p.fullSizeMarkup<10 || p.fullSizeMarkup>15) return "Full Size Markup ကို 10% မှ 15% အတွင်းထားပါ။";
+    if(!Number.isFinite(p.fullSizeMarkup) || p.fullSizeMarkup<0 || p.fullSizeMarkup>100) return "Full Size Margin ကို 0% မှ 100% အတွင်းထားပါ။";
   }
   return "";
 }
@@ -2403,7 +2358,7 @@ function recoverLegacyCredits({silent=false}={}){
     }
   }catch{}
 
-  // V30.4 fallback: merge the user's previously backed-up Credit Sale records.
+  // V30.5 fallback: merge the user's previously backed-up Credit Sale records.
   // This only adds missing records and will not duplicate existing ones.
   const backupAdded=recoverBackupCreditPack(merged,fingerprints);
   added += backupAdded;

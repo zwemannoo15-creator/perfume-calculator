@@ -1,17 +1,18 @@
-Perfume Calculator FINAL V30.4 — FULL SIZE MARGIN FIX
+Perfume Calculator FINAL V30.5 — FULL SIZE MARGIN HARD FIX
 
-FIXED:
-- Full Size Margin is now an easy dropdown: 10, 11, 12, 13, 14, 15% + Custom.
-- Custom supports decimal margins within 10–15% (example 12.5%).
-- Full Size margin is remembered in this browser.
-- Loading another perfume does NOT reset the Full Size margin.
-- LIVE Sheet refresh does NOT overwrite the Full Size margin.
-- Formula remains:
-  Full Bottle Cost + Full Size Margin + Delivery 5,000 Ks.
+Full Size:
+- One direct numeric Margin (%) input.
+- No dropdown/custom state.
+- The exact visible margin value is read on every calculation.
+- Formula = Full Bottle Cost + (Full Bottle Cost × Margin %) + 5,000 Ks.
+- Recalculates immediately on typing/change.
+- Shows "Margin Used" in the result for verification.
+- Perfume loading and LIVE refresh do not overwrite this main Full Size margin.
+- Margin is remembered locally.
 
-PRESERVED:
+Preserved:
 - Bundle Set + Rounded Price
-- Credit Sale recovery/restored records
+- Credit Sale restore/recovery
 - LIVE perfume catalog
-- Direct / Consignment / Full Size separation
-- Bottle-size cost memory
+- Direct / Consignment
+- Bottle-size costs
