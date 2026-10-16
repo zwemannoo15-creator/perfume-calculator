@@ -7,8 +7,8 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
-  <!-- V30.7.1 FINAL: hardened single-file build -->
-<title>Perfume Calculator • LIVE</title>
+  <!-- V30.8 BULK CATEGORY UPDATE: hardened single-file build -->
+  <title>Perfume Calculator • LIVE</title>
   <style>
 *{box-sizing:border-box}
 :root{--bg:#f4f5f7;--card:#fff;--text:#111827;--muted:#6b7280;--border:#e5e7eb;--soft:#fff7cc;--good:#ecfdf5;--danger:#b91c1c}
@@ -55,9 +55,8 @@ body{min-height:100vh;min-height:100dvh}button,input{font:inherit}button{cursor:
 
 .live-sheet-status{font-size:12px;font-weight:800;margin:6px 0 0;color:#92400e}.live-sheet-status.ok{color:#047857}.live-sheet-status.error{color:#b45309}
 
-
 /* V23 in-app Admin */
-.admin-grid select,.admin-picker-row select{width:100%;border:1px solid var(--border);border-radius:14px;padding:12px 13px;background:var(--soft);font:inherit;outline:none}
+.admin-grid select,.admin-picker-row select,.bulk-grid select{width:100%;border:1px solid var(--border);border-radius:14px;padding:12px 13px;background:var(--soft);font:inherit;outline:none}
 .admin-picker-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:10px;align-items:center}
 @media(max-width:520px){.admin-picker-row{grid-template-columns:1fr}.admin-picker-row button{width:100%}}
 
@@ -66,6 +65,22 @@ body{min-height:100vh;min-height:100dvh}button,input{font:inherit}button{cursor:
 .sync-pill{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:4px 9px;font-size:11px;font-weight:900;background:#f3f4f6;color:#4b5563}.sync-pill.good{background:#ecfdf5;color:#047857}.sync-pill.warn{background:#fff7ed;color:#9a3412}
 #appErrorBanner{position:sticky;top:8px;z-index:9999;max-width:1040px;margin:8px auto 0;padding:10px 14px;border:1px solid #fecaca;background:#fff1f2;color:#991b1b;border-radius:12px;font-size:13px;font-weight:700;box-shadow:0 6px 18px rgba(0,0,0,.08)}
 @media(max-width:520px){.admin-password-row{grid-template-columns:1fr}.admin-password-row .secondary{width:100%;height:auto}}
+
+/* V30.8 Bulk Category Update */
+.bulk-box{margin-top:16px;padding:16px;border:1px solid #fde68a;border-radius:18px;background:#fffdf5}
+.bulk-box-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:12px}
+.bulk-box-head h3{margin:0;font-size:16px}
+.bulk-box-head p{margin:4px 0 0;font-size:12px;color:var(--muted)}
+.bulk-preview-wrap{margin-top:12px;border:1px solid var(--border);border-radius:14px;background:#fff;padding:10px 12px;max-height:260px;overflow-y:auto}
+.bulk-preview-toolbar{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;padding-bottom:8px;margin-bottom:8px;border-bottom:1px dashed var(--border);font-size:12px;font-weight:700;color:#374151}
+.bulk-preview-item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:7px 4px;border-bottom:1px solid #f3f4f6;font-size:13px}
+.bulk-preview-item:last-child{border-bottom:0}
+.bulk-preview-left{display:flex;align-items:center;gap:8px;min-width:0}
+.bulk-preview-left input[type="checkbox"]{width:17px;height:17px;margin:0;accent-color:#111827;cursor:pointer}
+.bulk-preview-right{text-align:right;white-space:nowrap;font-size:12px}
+.bulk-old{color:var(--muted);text-decoration:line-through;margin-right:4px}
+.bulk-new{font-weight:800;color:#047857}
+.bulk-divider{margin:20px 0 16px;border-top:1px dashed var(--border);padding-top:16px}
 
 /* V30 Bundle Set */
 .segmented.six{grid-template-columns:repeat(6,1fr)}
@@ -99,9 +114,10 @@ body{min-height:100vh;min-height:100dvh}button,input{font:inherit}button{cursor:
   .bundle-slots,.bundle-controls{grid-template-columns:1fr}
   .bundle-breakdown{grid-template-columns:repeat(2,minmax(0,1fr))}
   .bundle-item-row{grid-template-columns:1fr 1fr}
+  .bulk-preview-item{flex-direction:column;align-items:flex-start}
+  .bulk-preview-right{text-align:left;padding-left:25px}
 }
-
-</style>
+  </style>
 </head>
 <body>
   <div id="appErrorBanner" class="hidden" role="alert"></div>
@@ -111,7 +127,7 @@ body{min-height:100vh;min-height:100dvh}button,input{font:inherit}button{cursor:
       <div>
         <p class="eyebrow">PERFUME PRICE TOOL</p>
         <h1>Perfume Calculator</h1>
-        <p class="sub">Bundle Set module ပါပြီ • Perfume ၅ မျိုး • same ml • editable Margin • Bottle size cost memory.</p>
+        <p class="sub">Bulk Category Update ပါပြီ • Bundle Set • Perfume ၅ မျိုး • editable Margin • Bottle size cost memory.</p>
       </div>
       <button id="installBtn" class="ghost hidden">Install App</button>
     </header>
@@ -307,8 +323,6 @@ body{min-height:100vh;min-height:100dvh}button,input{font:inherit}button{cursor:
     </section>
     </div>
 
-
-
     <section id="bundleModule" class="card hidden">
       <div class="section-head">
         <div>
@@ -460,7 +474,7 @@ body{min-height:100vh;min-height:100dvh}button,input{font:inherit}button{cursor:
       <div class="section-head">
         <div>
           <p class="eyebrow">ADMIN • LIVE DATABASE</p>
-          <h2>Perfume Edit / Add / Delete</h2>
+          <h2>Perfume Edit / Add / Delete & Bulk Category Update</h2>
           <p>Google Sheet ကိုသွားစရာမလိုပါ။ ဒီနေရာကနေ Save လုပ်တာနဲ့ ဖုန်း/PC အားလုံးမှာ LIVE ပြောင်းမယ်။</p>
         </div>
         <div style="display:flex;gap:7px;align-items:center;flex-wrap:wrap;justify-content:flex-end"><span id="adminSyncState" class="sync-pill">SYNCING</span><span id="adminLiveBadge" class="live-badge offline">CONNECTING</span></div>
@@ -475,6 +489,102 @@ body{min-height:100vh;min-height:100dvh}button,input{font:inherit}button{cursor:
           <button id="adminForgetBtn" class="secondary" type="button">Forget Password</button>
         </div>
         <p class="admin-msg">Password ကို ရိုက်တာနဲ့ ဒီ device/browser မှာ အလိုအလျောက်မှတ်ထားမယ်။ + New / Create တိုင်း Unlock ထပ်နှိပ်စရာမလိုပါ။ Shared device ဆို Forget Password ကိုနှိပ်ပါ။</p>
+      </div>
+
+      <!-- NEW: BULK CATEGORY PRICE & MARGIN UPDATE -->
+      <div class="bulk-box">
+        <div class="bulk-box-head">
+          <div>
+            <p class="eyebrow" style="color:#92400e">BULK CATEGORY UPDATE</p>
+            <h3>Category အလိုက် တစ်ပြိုင်နက် ဈေးနှုန်း / Margin ပြင်ရန်</h3>
+            <p>Category တစ်ခုလုံးရဲ့ Full Bottle Cost သို့မဟုတ် Margin တွေကို တစ်ခုချင်းလိုက်ပြင်စရာမလိုဘဲ တစ်ပြိုင်နက် ပြင်နိုင်ပါတယ်။</p>
+          </div>
+        </div>
+
+        <div class="grid bulk-grid">
+          <label>
+            <span>1. ပြင်မည့် Category ရွေးပါ</span>
+            <select id="bulkCategorySelect">
+              <option value="UAE">UAE</option>
+              <option value="DESIGNER">DESIGNER</option>
+              <option value="NICHE">NICHE</option>
+              <option value="UNCATEGORIZED">UNCATEGORIZED (Category မရှိသေး)</option>
+              <option value="ALL">ALL (Perfume အားလုံး)</option>
+            </select>
+          </label>
+
+          <label>
+            <span>2. Full Bottle Cost ပြင်မည့်ပုံစံ</span>
+            <select id="bulkPriceMode">
+              <option value="none">ဈေးမပြင်ပါ (Keep Current Cost)</option>
+              <option value="add_ks" selected>Ks ပမာဏ တိုး/လျှော့ (+ / - Ks)</option>
+              <option value="add_pct">ရာခိုင်နှုန်းဖြင့် တိုး/လျှော့ (+ / - %)</option>
+              <option value="exact_ks">ပုံသေဈေး သတ်မှတ်မည် (Exact Ks)</option>
+            </select>
+          </label>
+
+          <label id="bulkPriceValueWrap">
+            <span id="bulkPriceValueLabel">တိုး/လျှော့မည့် ပမာဏ (Ks)</span>
+            <input id="bulkPriceValue" type="number" step="500" placeholder="ဥပမာ 5000 သို့မဟုတ် -3000" />
+            <small style="color:var(--muted);font-size:11px">ဈေးလျှော့ချင်ရင် အရှေ့မှာ အနှုတ် (-) ထည့်ပါ (ဥပမာ -5000)</small>
+          </label>
+
+          <label id="bulkRoundStepWrap">
+            <span>Bottle Cost ဘောင်ချိန်ညှိရန် (Round To)</span>
+            <select id="bulkPriceRound">
+              <option value="1000" selected>1,000 Ks အနီးဆုံး</option>
+              <option value="500">500 Ks အနီးဆုံး</option>
+              <option value="100">100 Ks အနီးဆုံး</option>
+              <option value="1">မချိန်ညှိပါ (Exact)</option>
+            </select>
+          </label>
+
+          <label>
+            <span>Consignment Target Margin (%) ပြင်ရန်</span>
+            <input id="bulkTargetMargin" type="number" min="0" max="99" step="0.5" placeholder="မပြင်လျှင် အလွတ်ထားပါ" />
+          </label>
+
+          <label>
+            <span>Direct Margin (%) ပြင်ရန်</span>
+            <input id="bulkDirectMarkup" type="number" min="0" max="100" step="0.5" placeholder="မပြင်လျှင် အလွတ်ထားပါ" />
+          </label>
+
+          <label>
+            <span>Full Size Margin (%) ပြင်ရန်</span>
+            <input id="bulkFullSizeMarkup" type="number" min="0" max="100" step="0.5" placeholder="မပြင်လျှင် အလွတ်ထားပါ" />
+          </label>
+
+          <label>
+            <span>Category ပြောင်းသတ်မှတ်ရန် (Optional)</span>
+            <select id="bulkAssignCategory">
+              <option value="">— လက်ရှိ Category အတိုင်းထားမည် —</option>
+              <option value="UAE">UAE သို့ ပြောင်းမည်</option>
+              <option value="DESIGNER">DESIGNER သို့ ပြောင်းမည်</option>
+              <option value="NICHE">NICHE သို့ ပြောင်းမည်</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="bulk-preview-wrap">
+          <div class="bulk-preview-toolbar">
+            <span id="bulkPreviewSummary">ရွေးချယ်ထားသော Category မှ ပစ္စည်းများ</span>
+            <div style="display:flex;gap:8px">
+              <button id="bulkCheckAllBtn" type="button" class="secondary" style="padding:4px 8px;font-size:11px">Select All</button>
+              <button id="bulkUncheckAllBtn" type="button" class="secondary" style="padding:4px 8px;font-size:11px">Unselect All</button>
+            </div>
+          </div>
+          <div id="bulkPreviewList"></div>
+        </div>
+
+        <div class="admin-editor-actions">
+          <button id="bulkResetInputsBtn" class="secondary" type="button">Reset Bulk Inputs</button>
+          <button id="bulkApplyBtn" class="primary-btn" type="button">Bulk Save LIVE (Category အလိုက်သိမ်းမည်)</button>
+        </div>
+        <p id="bulkMsg" class="admin-msg" aria-live="polite"></p>
+      </div>
+
+      <div class="bulk-divider">
+        <h3 style="margin:0 0 10px;font-size:16px">Perfume တစ်ခုချင်းစီ ပြင်ရန် / အသစ်ထည့်ရန်</h3>
       </div>
 
       <div id="adminEditor">
@@ -594,14 +704,10 @@ body{min-height:100vh;min-height:100dvh}button,input{font:inherit}button{cursor:
       <div id="creditList" class="credit-list"></div>
     </section>
 
-
-
-    <footer><p>Perfume Calculator V30.7 FINAL • In-App Admin • Google Sheet LIVE • Single-file</p></footer>
+    <footer><p>Perfume Calculator V30.8 BULK CATEGORY UPDATE • In-App Admin • Google Sheet LIVE • Single-file</p></footer>
   </main>
 
   <script>
-
-// V22.1 single-file build: remove old PWA service workers/caches so stale deploys cannot blank the page.
 try {
   if ("serviceWorker" in navigator) navigator.serviceWorker.getRegistrations().then(rs=>rs.forEach(r=>r.unregister())).catch(()=>{});
   if ("caches" in window) caches.keys().then(keys=>Promise.all(keys.map(k=>caches.delete(k)))).catch(()=>{});
@@ -620,9 +726,6 @@ const ids = ["name","fullPrice","bottleMl","decantMl","wastage","packCost","cons
 let mode = "consignment";
 let lastPricingMode = "consignment";
 
-// Protect manual calculator edits from LIVE auto-sync.
-// Google Sheet may refresh every few seconds, but it must NEVER overwrite
-// values the user is currently editing (e.g. pack cost 3600 -> 850).
 let pricingFormDirty = false;
 let pricingLoadedName = "";
 let pricingLastUserEditAt = 0;
@@ -633,7 +736,7 @@ function markPricingDirty(){
   const note=$("savedRecoveryNote");
   if(note && PRICING_MODES.includes(mode)){
     const label=mode==="fullsize"?"Full Size":mode==="direct"?"Direct Decant":"Consignment";
-    note.textContent=`${label} • ကိုယ်ပြင်ထားတဲ့ value တွေကို LIVE sync က overwrite မလုပ်ပါ။ Save LIVE လုပ်ချင်ရင် Save Perfume ကိုနှိပ်ပါ။`;
+    note.textContent=`${label} • ကိုယ်ပြင်ထားတဲ့ value တွေကို LIVE sync က overwrite မလုပ်ပါ။ Save LIVE လုပ်ချင်ရင် Edit in Admin ကိုနှိပ်ပါ။`;
   }
 }
 function markPricingClean(name=""){
@@ -641,7 +744,6 @@ function markPricingClean(name=""){
   pricingLoadedName = String(name||$("name")?.value||"").trim().toLowerCase();
 }
 
-// Bottle + Pack cost belongs to DECANT BOTTLE SIZE, not perfume.
 const BOTTLE_COST_KEY="perfumeBottlePackCostsV1";
 const BUILTIN_BOTTLE_COSTS=Object.freeze({"2":850,"10":3600,"30":6800});
 
@@ -698,8 +800,6 @@ function applyRemotePerfumeToPricing(match,{force=false}={}){
     if(match[k]!==undefined && $(k)) $(k).value=match[k];
   });
 
-  // Background LIVE sync must never reset the Full Size margin while editing.
-  // A force=true apply happens only after an explicit confirmed Admin Save.
   if(force && match.fullSizeMarkup!==undefined && $("fullSizeMarginInput")){
     const savedMargin=Number(match.fullSizeMarkup);
     if(Number.isFinite(savedMargin)){
@@ -714,9 +814,6 @@ function applyRemotePerfumeToPricing(match,{force=false}={}){
   return true;
 }
 
-// Perfume catalog and pricing mode are separate.
-// Every perfume must be selectable in Direct / Consignment / Full Size.
-// Switching mode keeps the same perfume and cost data, but changes the formula/UI.
 const PRICING_MODES=["consignment","direct","fullsize"];
 
 function setPricingMode(which){
@@ -741,6 +838,7 @@ function ks(v){ return Number.isFinite(v)?`${Math.round(v).toLocaleString()} Ks`
 function pct(v){ return Number.isFinite(v)?`${(v*100).toFixed(1)}%`:"0%"; }
 function clamp(v,min,max){ return Math.min(max,Math.max(min,v)); }
 function roundUp(v,step){ const s=Math.max(1,step); return Math.ceil(v/s)*s; }
+function roundNearest(v,step){ const s=Math.max(1,Number(step)||1); return Math.round(v/s)*s; }
 
 function baseDecant(sizeMl){
   const fullPrice=n("fullPrice"), bottleMl=n("bottleMl"), wastage=n("wastage")/100;
@@ -801,7 +899,6 @@ function restoreFullSizeMargin(){
   }catch{}
   if($("fullSizeMarginInput")) $("fullSizeMarginInput").value=String(v);
 }
-function ensureFullSizeMarkupOption(value){ return; }
 
 function calcFullSize(){
   const fullPrice=n("fullPrice");
@@ -916,7 +1013,6 @@ ids.forEach(id=>{
   });
 });
 
-
 if($("fullSizeMarginInput")){
   const applyFullSizeMargin=()=>{
     rememberFullSizeMargin();
@@ -948,7 +1044,7 @@ document.querySelectorAll(".seg").forEach(btn=>btn.addEventListener("click",()=>
   if($("adminModule")) $("adminModule").classList.toggle("hidden",!isAdmin);
   if(isCredit){ renderCredits(); return; }
   if(isBundle){ renderBundlePickers(); syncBundleBottleCost(); calculateBundle(); updateBundleLiveBadge(); return; }
-  if(isAdmin){ renderAdminPicker(); updateAdminLiveBadge(); return; }
+  if(isAdmin){ renderAdminPicker(); renderBulkCategoryUI(); updateAdminLiveBadge(); return; }
 }));
 document.querySelectorAll(".quick-sizes button").forEach(btn=>btn.addEventListener("click",()=>{
   $("decantMl").value=btn.dataset.size;
@@ -992,8 +1088,6 @@ function normalizeSavedItem(x){
   if(!Number.isFinite(fullPrice)) return null;
   let item={...x,fullPrice};
 
-  // V24 stores category inside the existing mode cell, e.g. "direct|uae".
-  // This keeps the current Apps Script compatible — no Apps Script change is required.
   const rawMode=String(item.mode||"").trim().toLowerCase();
   const modeParts=rawMode.split("|");
   const decodedMode=modeParts[0];
@@ -1014,9 +1108,7 @@ function normalizeSavedItem(x){
 function migrateLegacySaved(){
   if(localStorage.getItem(LEGACY_MIGRATION_FLAG)==="1") return;
   const found=[];
-  // Known older key from the original Decant Calculator.
   [SAVED_KEY,"decantSaved"].forEach(key=>readSavedKey(key).forEach(x=>found.push(x)));
-  // Also look for older app-specific arrays in this same browser origin.
   try{
     for(let i=0;i<localStorage.length;i++){
       const key=localStorage.key(i)||"";
@@ -1129,7 +1221,7 @@ function renderBundlePickers(){
     const q=String(search?.value||"").trim().toLowerCase();
     let list=catalog;
     if(q) list=catalog.filter(x=>String(x.name||"").toLowerCase().includes(q));
-    sel.innerHTML='<option value="">— Perfume ရွေးပါ —</option>'+list.map(x=>{
+    sel.innerHTML='<option value="">— Perfume ရွေးပါ —</option'+list.map(x=>{
       const name=String(x.name||"");
       const key=name.trim().toLowerCase();
       return `<option value="${escapeHtml(key)}">${escapeHtml(name)} — ${Number(x.fullPrice||0).toLocaleString()} Ks</option>`;
@@ -1292,15 +1384,12 @@ function resetBundle(){
   calculateBundle();
 }
 function setSaved(items){
-  // Local fallback cache only. Shared perfume data is edited in Google Sheet.
   localStorage.setItem(SAVED_KEY,JSON.stringify(items));
   if(!liveSheetReady) livePerfumes = Array.isArray(items) ? items : [];
   renderSaved();
   renderSavedPicker();
 }
-function currentPayload(){ return {name:$("name").value.trim()||"Untitled Perfume",mode,fullPrice:n("fullPrice"),bottleMl:n("bottleMl"),decantMl:n("decantMl"),wastage:n("wastage"),packCost:n("packCost"),consignment:n("consignment"),targetMargin:n("targetMargin"),directMarkup:n("directMarkup"),fullSizeMarkup:fullSizeMarginPct(),roundTo:n("roundTo")}; }
 $("saveBtn").addEventListener("click",()=>{
-  // Freeze current calculator edits before opening Admin.
   if($("name")?.value.trim()) pricingFormDirty=true;
   const adminTab=document.querySelector('.seg[data-mode="admin"]');
   if(adminTab) adminTab.click();
@@ -1330,12 +1419,10 @@ function loadItem(i){
   const x=getSaved()[i]; if(!x)return;
   const currentMode=PRICING_MODES.includes(mode)?mode:lastPricingMode;
 
-  // Perfume data is shared. Loading a perfume never forces a pricing mode change.
   $("name").value=x.name||"";
   ["fullPrice","bottleMl","wastage","consignment","targetMargin","directMarkup","roundTo"].forEach(k=>{
     if(x[k]!==undefined&&$(k)) $(k).value=x[k];
   });
-  // Explicit Load = use this perfume's saved Full Size margin.
   if(x.fullSizeMarkup!==undefined && $("fullSizeMarginInput")){
     const savedMargin=Number(x.fullSizeMarkup);
     if(Number.isFinite(savedMargin)){
@@ -1452,7 +1539,6 @@ if(savedPerfumeSearch){
       renderSavedPicker();
       return;
     }
-    // Search ပြီး Enter နှိပ်တာနဲ့ currently shown best match ကို load လုပ်မယ်။
     if(e.key==="Enter"){
       e.preventDefault();
       const raw=$("savedPerfumeSelect")?.value ?? "";
@@ -1514,7 +1600,7 @@ if($("bundleCopyBtn")) $("bundleCopyBtn").addEventListener("click",async()=>{
     `Round Up To: ${ks(r.roundStep)}`,
     `Bundle Rounded Price: ${ks(r.roundedSelling)}`
   ];
-  const text=lines.join("\\n");
+  const text=lines.join("\n");
   try{
     await navigator.clipboard.writeText(text);
     $("bundleCopyBtn").textContent="Copied";
@@ -1532,7 +1618,7 @@ $("loadSelectedBtn").addEventListener("click",()=>{
 if($("clearSaved")) $("clearSaved").addEventListener("click",()=>window.open(SHEET_EDIT_URL,"_blank","noopener"));
 
 function exportBackup(){
-  const payload={app:"Perfume Calculator",version:30.7,exportedAt:new Date().toISOString(),savedPerfumes:getSaved(),creditSales:typeof getCredits==="function"?getCredits():[]};
+  const payload={app:"Perfume Calculator",version:30.8,exportedAt:new Date().toISOString(),savedPerfumes:getSaved(),creditSales:typeof getCredits==="function"?getCredits():[]};
   const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
   const url=URL.createObjectURL(blob), a=document.createElement("a");
   a.href=url; a.download=`perfume-calculator-backup-${todayLocal()}.json`; document.body.appendChild(a); a.click(); a.remove();
@@ -1567,9 +1653,297 @@ $("exportBackup").addEventListener("click",exportBackup);
 $("importBackupBtn").addEventListener("click",()=>$("importBackupFile").click());
 $("importBackupFile").addEventListener("change",e=>{ const f=e.target.files&&e.target.files[0]; if(f) importBackupFile(f); e.target.value=""; });
 
+// ---------------- In-App Admin LIVE write + Bulk Category Update ----------------
+let bulkUncheckedNames = new Set();
 
+function matchesBulkCategory(item, catChoice){
+  const itemCat=String(item?.category||"").trim().toUpperCase();
+  if(catChoice==="ALL") return true;
+  if(catChoice==="UNCATEGORIZED") return !itemCat;
+  return itemCat===catChoice;
+}
 
-// ---------------- In-App Admin LIVE write ----------------
+function updateBulkCategoryCounts(){
+  const sel=$("bulkCategorySelect");
+  if(!sel) return;
+  const all=getPerfumeCatalog();
+  const counts={
+    UAE:all.filter(x=>String(x.category||"").toUpperCase()==="UAE").length,
+    DESIGNER:all.filter(x=>String(x.category||"").toUpperCase()==="DESIGNER").length,
+    NICHE:all.filter(x=>String(x.category||"").toUpperCase()==="NICHE").length,
+    UNCATEGORIZED:all.filter(x=>!String(x.category||"").trim()).length,
+    ALL:all.length
+  };
+  Array.from(sel.options).forEach(opt=>{
+    const v=opt.value;
+    if(v==="UAE") opt.textContent=`UAE (${counts.UAE})`;
+    else if(v==="DESIGNER") opt.textContent=`DESIGNER (${counts.DESIGNER})`;
+    else if(v==="NICHE") opt.textContent=`NICHE (${counts.NICHE})`;
+    else if(v==="UNCATEGORIZED") opt.textContent=`UNCATEGORIZED — Category မရှိသေး (${counts.UNCATEGORIZED})`;
+    else if(v==="ALL") opt.textContent=`ALL — Perfume အားလုံး (${counts.ALL})`;
+  });
+}
+
+function computeBulkUpdatedItem(item){
+  const priceMode=String($("bulkPriceMode")?.value||"none");
+  const rawPriceVal=String($("bulkPriceValue")?.value??"").trim();
+  const priceVal=rawPriceVal===""?NaN:Number(rawPriceVal);
+  const roundStep=Math.max(1,Number($("bulkPriceRound")?.value||1000));
+
+  const oldPrice=Number(item.fullPrice||0);
+  let newPrice=oldPrice;
+
+  if(priceMode!=="none" && Number.isFinite(priceVal)){
+    if(priceMode==="add_ks"){
+      newPrice=roundNearest(Math.max(0,oldPrice+priceVal),roundStep);
+    }else if(priceMode==="add_pct"){
+      newPrice=roundNearest(Math.max(0,oldPrice*(1+priceVal/100)),roundStep);
+    }else if(priceMode==="exact_ks"){
+      newPrice=roundNearest(Math.max(0,priceVal),roundStep);
+    }
+  }
+
+  const rawTarget=String($("bulkTargetMargin")?.value??"").trim();
+  const rawDirect=String($("bulkDirectMarkup")?.value??"").trim();
+  const rawFull=String($("bulkFullSizeMarkup")?.value??"").trim();
+  const assignCat=String($("bulkAssignCategory")?.value||"").trim().toUpperCase();
+
+  const newTarget=rawTarget!=="" && Number.isFinite(Number(rawTarget)) ? clamp(Number(rawTarget),0,99) : Number(item.targetMargin??20);
+  const newDirect=rawDirect!=="" && Number.isFinite(Number(rawDirect)) ? clamp(Number(rawDirect),0,100) : Number(item.directMarkup??15);
+  const newFull=rawFull!=="" && Number.isFinite(Number(rawFull)) ? clamp(Number(rawFull),0,100) : Number(item.fullSizeMarkup??15);
+  const newCategory=assignCat || String(item.category||"").toUpperCase();
+
+  return {
+    ...item,
+    fullPrice:newPrice,
+    targetMargin:newTarget,
+    directMarkup:newDirect,
+    fullSizeMarkup:newFull,
+    category:newCategory
+  };
+}
+
+function renderBulkCategoryUI(){
+  updateBulkCategoryCounts();
+  const priceMode=String($("bulkPriceMode")?.value||"none");
+  const valWrap=$("bulkPriceValueWrap"), roundWrap=$("bulkRoundStepWrap"), label=$("bulkPriceValueLabel");
+  if(valWrap) valWrap.classList.toggle("hidden",priceMode==="none");
+  if(roundWrap) roundWrap.classList.toggle("hidden",priceMode==="none");
+  if(label){
+    if(priceMode==="add_ks") label.textContent="တိုး/လျှော့မည့် ပမာဏ (Ks)";
+    else if(priceMode==="add_pct") label.textContent="တိုး/လျှော့မည့် ရာခိုင်နှုန်း (%)";
+    else if(priceMode==="exact_ks") label.textContent="သတ်မှတ်မည့် ပုံသေဈေး (Ks)";
+  }
+
+  const catChoice=String($("bulkCategorySelect")?.value||"UAE");
+  const matches=getPerfumeCatalog().filter(x=>matchesBulkCategory(x,catChoice));
+  const listRoot=$("bulkPreviewList"), summaryEl=$("bulkPreviewSummary");
+  if(!listRoot) return;
+
+  if(!matches.length){
+    if(summaryEl) summaryEl.textContent=`${catChoice} တွင် Perfume မရှိသေးပါ`;
+    listRoot.innerHTML=`<div class="empty">ရွေးချယ်ထားသော Category (${escapeHtml(catChoice)}) တွင် Perfume မရှိသေးပါ။ အောက်ရှိ UNCATEGORIZED သို့မဟုတ် ALL ကိုရွေးပြီး Category သတ်မှတ်နိုင်ပါတယ်။</div>`;
+    return;
+  }
+
+  const checkedCount=matches.filter(x=>!bulkUncheckedNames.has(String(x.name||"").trim().toLowerCase())).length;
+  if(summaryEl) summaryEl.textContent=`${catChoice} • ရွေးထားသော Perfume (${checkedCount} / ${matches.length}) မျိုး`;
+
+  listRoot.innerHTML=matches.map(item=>{
+    const key=String(item.name||"").trim().toLowerCase();
+    const checked=!bulkUncheckedNames.has(key);
+    const preview=computeBulkUpdatedItem(item);
+    const priceChanged=Math.round(preview.fullPrice)!==Math.round(item.fullPrice);
+    const catChanged=preview.category!==String(item.category||"").toUpperCase();
+    const marginChanged=(preview.targetMargin!==Number(item.targetMargin??20)) || (preview.directMarkup!==Number(item.directMarkup??15)) || (preview.fullSizeMarkup!==Number(item.fullSizeMarkup??15));
+
+    return `<div class="bulk-preview-item">
+      <label class="bulk-preview-left" style="flex-direction:row;align-items:center;cursor:pointer">
+        <input type="checkbox" class="bulk-item-check" data-name-key="${escapeHtml(key)}" ${checked?"checked":""} />
+        <div>
+          <strong>${escapeHtml(item.name)}</strong>
+          <small style="display:block;color:var(--muted);font-size:11px">
+            ${escapeHtml(item.category||"NO CATEGORY")}${catChanged?` → <strong>${escapeHtml(preview.category)}</strong>`:""}
+            • Consign ${preview.targetMargin}% • Direct ${preview.directMarkup}% • Full ${preview.fullSizeMarkup}%
+          </small>
+        </div>
+      </label>
+      <div class="bulk-preview-right">
+        ${priceChanged
+          ? `<span class="bulk-old">${ks(item.fullPrice)}</span><span class="bulk-new">${ks(preview.fullPrice)}</span>`
+          : `<strong>${ks(preview.fullPrice)}</strong>`}
+        ${marginChanged && !priceChanged ? `<span class="bulk-new" style="display:block">Margin Updated</span>` : ""}
+      </div>
+    </div>`;
+  }).join("");
+
+  listRoot.querySelectorAll(".bulk-item-check").forEach(cb=>{
+    cb.addEventListener("change",()=>{
+      const k=String(cb.dataset.nameKey||"");
+      if(cb.checked) bulkUncheckedNames.delete(k);
+      else bulkUncheckedNames.add(k);
+      renderBulkCategoryUI();
+    });
+  });
+}
+
+function setBulkMsg(text,type=""){
+  const el=$("bulkMsg"); if(!el) return;
+  el.textContent=text||"";
+  el.className="admin-msg"+(type?` ${type}`:"");
+}
+
+async function applyBulkCategorySave(){
+  if(adminBusy) return;
+  const password=String($("adminPassword")?.value||"").trim();
+  if(!password){
+    setBulkMsg("Admin Password အရင်ထည့်ပါ။","error");
+    $("adminPassword")?.focus();
+    return;
+  }
+
+  const catChoice=String($("bulkCategorySelect")?.value||"UAE");
+  const matches=getPerfumeCatalog().filter(x=>{
+    const key=String(x.name||"").trim().toLowerCase();
+    return matchesBulkCategory(x,catChoice) && !bulkUncheckedNames.has(key);
+  });
+
+  if(!matches.length){
+    setBulkMsg("ပြင်ဆင်မည့် Perfume အနည်းဆုံး ၁ မျိုးကို အမှန်ခြစ်ရွေးပါ။","error");
+    return;
+  }
+
+  const priceMode=String($("bulkPriceMode")?.value||"none");
+  const rawPriceVal=String($("bulkPriceValue")?.value??"").trim();
+  const rawTarget=String($("bulkTargetMargin")?.value??"").trim();
+  const rawDirect=String($("bulkDirectMarkup")?.value??"").trim();
+  const rawFull=String($("bulkFullSizeMarkup")?.value??"").trim();
+  const assignCat=String($("bulkAssignCategory")?.value||"").trim();
+
+  if(priceMode!=="none" && (rawPriceVal==="" || !Number.isFinite(Number(rawPriceVal)))){
+    setBulkMsg("Full Bottle Cost ပြင်ရန် ပမာဏကို မှန်ကန်စွာ ရိုက်ထည့်ပါ။","error");
+    $("bulkPriceValue")?.focus();
+    return;
+  }
+  if(priceMode==="none" && rawTarget==="" && rawDirect==="" && rawFull==="" && !assignCat){
+    setBulkMsg("ပြင်ဆင်လိုသည့် ဈေးနှုန်း၊ Margin သို့မဟုတ် Category တစ်ခုခုကို ထည့်သွင်းပါ။","error");
+    return;
+  }
+
+  const updatedItems=matches.map(item=>computeBulkUpdatedItem(item));
+  if(updatedItems.some(u=>!Number.isFinite(u.fullPrice) || u.fullPrice<=0)){
+    setBulkMsg("တွက်ချက်လိုက်သော Full Bottle Cost သည် 0 Ks သို့မဟုတ် 0 အောက် ဖြစ်နေပါသည်။ ပမာဏကို ပြန်စစ်ပါ။","error");
+    return;
+  }
+
+  if(!confirm(`${catChoice} Category မှ ရွေးထားသော Perfume (${updatedItems.length}) မျိုးကို တစ်ပြိုင်နက် LIVE Save လုပ်မလား?`)) return;
+
+  try{ localStorage.setItem("perfumeAdminPwRemembered",password); }catch{}
+  setAdminBusy(true,"save");
+  const bulkBtn=$("bulkApplyBtn");
+  if(bulkBtn) bulkBtn.disabled=true;
+
+  try{
+    let doneCount=0;
+    for(const u of updatedItems){
+      doneCount++;
+      setBulkMsg(`⏳ Saving LIVE (${doneCount} / ${updatedItems.length}): ${u.name} → ${ks(u.fullPrice)}...`,"info");
+      if(bulkBtn) bulkBtn.textContent=`Saving ${doneCount}/${updatedItems.length}…`;
+
+      const baseMode=["consignment","direct","fullsize"].includes(u.mode)?u.mode:"consignment";
+      const category=String(u.category||"").toUpperCase();
+      const encodedMode=category?`${baseMode}|${category.toLowerCase()}`:baseMode;
+
+      const payload={
+        action:"save",
+        password,
+        name:String(u.name||"").trim(),
+        mode:encodedMode,
+        baseMode,
+        category,
+        fullPrice:Number(u.fullPrice),
+        bottleMl:Number(u.bottleMl||100),
+        wastage:Number(u.wastage??5),
+        packCost:Number(u.packCost??3600),
+        consignment:Number(u.consignment??15),
+        targetMargin:Number(u.targetMargin??20),
+        directMarkup:Number(u.directMarkup??15),
+        fullSizeMarkup:Number(u.fullSizeMarkup??15),
+        roundTo:Number(u.roundTo??1000),
+        originalName:String(u.name||"").trim()
+      };
+
+      await postAppsScript(payload);
+
+      // Update local state immediately so UI reflects the change right away
+      const idx=livePerfumes.findIndex(v=>String(v.name||"").trim().toLowerCase()===String(u.name||"").trim().toLowerCase());
+      if(idx>=0) livePerfumes[idx]={...livePerfumes[idx],...u,mode:baseMode,category};
+      const savedAll=readSavedKey(SAVED_KEY);
+      const sIdx=savedAll.findIndex(v=>String(v.name||"").trim().toLowerCase()===String(u.name||"").trim().toLowerCase());
+      if(sIdx>=0){
+        savedAll[sIdx]={...savedAll[sIdx],...u,mode:baseMode,category};
+        localStorage.setItem(SAVED_KEY,JSON.stringify(savedAll));
+      }
+
+      await new Promise(r=>setTimeout(r,280));
+    }
+
+    renderSaved();
+    renderSavedPicker();
+    renderAdminPicker();
+    renderBundlePickers();
+    renderBulkCategoryUI();
+    calculate();
+
+    setBulkMsg(`✅ ${catChoice} Category မှ Perfume (${updatedItems.length}) မျိုးလုံး LIVE Save အောင်မြင်ပါပြီ။`,"success");
+    scheduleAdminVerify();
+  }catch(e){
+    setBulkMsg(navigator.onLine===false?"Internet မရှိပါ။ Online ပြန်ဖြစ်ရင် ထပ်နှိပ်ပါ။":"Bulk Save ပို့ရာတွင် အခက်အခဲရှိပါသည်။ Internet စစ်ပြီး ထပ်စမ်းပါ။","error");
+  }finally{
+    setAdminBusy(false);
+    if(bulkBtn){
+      bulkBtn.disabled=false;
+      bulkBtn.textContent="Bulk Save LIVE (Category အလိုက်သိမ်းမည်)";
+    }
+  }
+}
+
+if($("bulkCategorySelect")) $("bulkCategorySelect").addEventListener("change",()=>{
+  bulkUncheckedNames.clear();
+  renderBulkCategoryUI();
+});
+["bulkPriceMode","bulkPriceValue","bulkPriceRound","bulkTargetMargin","bulkDirectMarkup","bulkFullSizeMarkup","bulkAssignCategory"].forEach(id=>{
+  const el=$(id);
+  if(el){
+    el.addEventListener("input",renderBulkCategoryUI);
+    el.addEventListener("change",renderBulkCategoryUI);
+  }
+});
+if($("bulkCheckAllBtn")) $("bulkCheckAllBtn").addEventListener("click",()=>{
+  bulkUncheckedNames.clear();
+  renderBulkCategoryUI();
+});
+if($("bulkUncheckAllBtn")) $("bulkUncheckAllBtn").addEventListener("click",()=>{
+  const catChoice=String($("bulkCategorySelect")?.value||"UAE");
+  getPerfumeCatalog().filter(x=>matchesBulkCategory(x,catChoice)).forEach(x=>{
+    bulkUncheckedNames.add(String(x.name||"").trim().toLowerCase());
+  });
+  renderBulkCategoryUI();
+});
+if($("bulkResetInputsBtn")) $("bulkResetInputsBtn").addEventListener("click",()=>{
+  $("bulkPriceMode").value="add_ks";
+  $("bulkPriceValue").value="";
+  $("bulkPriceRound").value="1000";
+  $("bulkTargetMargin").value="";
+  $("bulkDirectMarkup").value="";
+  $("bulkFullSizeMarkup").value="";
+  $("bulkAssignCategory").value="";
+  bulkUncheckedNames.clear();
+  setBulkMsg("");
+  renderBulkCategoryUI();
+});
+if($("bulkApplyBtn")) $("bulkApplyBtn").addEventListener("click",applyBulkCategorySave);
+
 function updateAdminLiveBadge(){
   const el=$("adminLiveBadge"), sync=$("adminSyncState");
   if(el){
@@ -1623,8 +1997,6 @@ function renderAdminPicker(){
   }
   if($("adminDeleteBtn")) $("adminDeleteBtn").disabled=adminBusy || !adminLoadedExisting;
 }
-function ensureMarginOption(value){ return; }
-function ensureDirectMarkupOption(value){ return; }
 function updateAdminModeUI(){
   const m=String($("adminMode")?.value||"consignment");
   const isCons=m==="consignment", isDirect=m==="direct", isFull=m==="fullsize";
@@ -1640,7 +2012,6 @@ function applyCategoryMargin({isNew=false}={}){
   const target=$("adminTargetMargin"), direct=$("adminDirectMarkup");
   const targetHint=$("adminMarginHint"), directHint=$("adminDirectMarginHint");
 
-  // Admin is always editable. UAE only supplies a NEW-record default of 30%.
   if(target) target.disabled=false;
   if(direct) direct.disabled=false;
   if($("adminFullSizeMarkup")) $("adminFullSizeMarkup").disabled=false;
@@ -1766,7 +2137,6 @@ function finishAdminSuccess(message,{name=""}={}){
   setAdminBusy(false);
   setAdminMsg(message,"success");
 
-  // A confirmed Save is allowed to replace the main form with the newly saved values.
   if(name){
     const saved=livePerfumes.find(v=>String(v.name||"").trim().toLowerCase()===String(name).trim().toLowerCase());
     const currentName=String($("name")?.value||"").trim().toLowerCase();
@@ -1776,6 +2146,7 @@ function finishAdminSuccess(message,{name=""}={}){
   }
 
   renderAdminPicker();
+  renderBulkCategoryUI();
   renderSaved();
   renderSavedPicker();
   updateAdminLiveBadge();
@@ -1828,6 +2199,7 @@ async function checkAdminPending(){
       newAdminPerfume();
       setAdminMsg(`✅ ${name} Delete အောင်မြင်ပြီ။`,"success");
       renderAdminPicker();
+      renderBulkCategoryUI();
       updateAdminLiveBadge();
     }
   }
@@ -1849,7 +2221,6 @@ function scheduleAdminVerify({keepDeadline=false}={}){
   }
 }
 
-// Password is remembered automatically; there is no unlock gate.
 if($("adminPassword")){
   $("adminPassword").addEventListener("input",()=>{
     const pw=String($("adminPassword").value||"");
@@ -1919,6 +2290,7 @@ try{
   if(savedPw&&$("adminPassword")) $("adminPassword").value=savedPw;
 }catch{}
 renderAdminPicker();
+renderBulkCategoryUI();
 updateAdminModeUI();
 setAdminBusy(false);
 
@@ -1992,6 +2364,7 @@ function processLiveSheetResponse(resp){
     renderSaved();
     renderSavedPicker();
     renderAdminPicker();
+    renderBulkCategoryUI();
     renderBundlePickers();
     updateAdminLiveBadge();
     updateBundleLiveBadge();
@@ -1999,8 +2372,6 @@ function processLiveSheetResponse(resp){
     const currentName=String($("name")?.value||"").trim().toLowerCase();
     if(currentName){
       const match=items.find(x=>String(x.name||"").trim().toLowerCase()===currentName);
-      // Critical V30 rule:
-      // auto-sync can refresh the catalog/list, but cannot clobber values while user is editing.
       if(match && !pricingFormDirty){
         applyRemotePerfumeToPricing(match,{force:false});
       }
@@ -2059,30 +2430,26 @@ function refreshLiveSheet(force=false){
   },12000);
 }
 
-
-
 syncPackCostToSelectedSize({showNote:false});
 restoreFullSizeMargin();
 migrateLegacySaved();
 
-// First-run starter data: the 13 perfumes from the user's backup.
-// Starter data is only an offline fallback; Google Sheet is the shared LIVE source.
 (function seedStarterPerfumes(){
   if(getSaved().length) return;
   const starter=[
-    {name:"TROPICAL VIBE",mode:"consignment",fullPrice:130000,bottleMl:100,decantMl:10,wastage:5,packCost:3600,consignment:15,targetMargin:20,directMarkup:15,fullSizeMarkup:15,roundTo:1000},
-    {name:"FAKHAR BLACK",mode:"consignment",fullPrice:120000,bottleMl:100,decantMl:10,wastage:5,packCost:3600,consignment:15,targetMargin:20,directMarkup:15,fullSizeMarkup:15,roundTo:1000},
-    {name:"HUAWAS MAJESTIC",mode:"consignment",fullPrice:200000,bottleMl:100,decantMl:10,wastage:5,packCost:3600,consignment:15,targetMargin:20,directMarkup:15,fullSizeMarkup:15,roundTo:1000},
-    {name:"YARA CANDY",mode:"consignment",fullPrice:120000,bottleMl:100,decantMl:10,wastage:5,packCost:3600,consignment:15,targetMargin:20,directMarkup:15,fullSizeMarkup:15,roundTo:1000},
-    {name:"RARE REEF",mode:"consignment",fullPrice:170000,bottleMl:100,decantMl:10,wastage:5,packCost:3600,consignment:15,targetMargin:20,directMarkup:15,fullSizeMarkup:15,roundTo:1000},
-    {name:"HUAWAS FOR HIM",mode:"consignment",fullPrice:168000,bottleMl:100,decantMl:10,wastage:5,packCost:3600,consignment:15,targetMargin:20,directMarkup:15,fullSizeMarkup:15,roundTo:1000},
-    {name:"HUAWAS ICE",mode:"consignment",fullPrice:185000,bottleMl:100,decantMl:10,wastage:5,packCost:3600,consignment:15,targetMargin:20,directMarkup:15,fullSizeMarkup:15,roundTo:1000},
-    {name:"ANGHAM",mode:"direct",fullPrice:140000,bottleMl:100,decantMl:2,wastage:5,packCost:3600,consignment:15,targetMargin:20,directMarkup:15,fullSizeMarkup:15,roundTo:1000},
-    {name:"BEACH PARTY",mode:"direct",fullPrice:148000,bottleMl:100,decantMl:2,wastage:5,packCost:3600,consignment:15,targetMargin:20,directMarkup:15,fullSizeMarkup:15,roundTo:1000},
-    {name:"YUM YUM",mode:"direct",fullPrice:195000,bottleMl:100,decantMl:2,wastage:5,packCost:3600,consignment:15,targetMargin:20,directMarkup:15,fullSizeMarkup:15,roundTo:1000},
-    {name:"TURATIC ELECTRIC",mode:"direct",fullPrice:155000,bottleMl:100,decantMl:2,wastage:5,packCost:3600,consignment:15,targetMargin:20,directMarkup:15,fullSizeMarkup:15,roundTo:1000},
-    {name:"KAMARAH WAHA",mode:"direct",fullPrice:200000,bottleMl:100,decantMl:2,wastage:5,packCost:3600,consignment:15,targetMargin:20,directMarkup:15,fullSizeMarkup:15,roundTo:1000},
-    {name:"RAYHAM PACIFIC AURA",mode:"direct",fullPrice:120000,bottleMl:100,decantMl:2,wastage:5,packCost:3600,consignment:15,targetMargin:20,directMarkup:15,fullSizeMarkup:15,roundTo:1000}
+    {name:"TROPICAL VIBE",mode:"consignment",category:"UAE",fullPrice:130000,bottleMl:100,decantMl:10,wastage:5,packCost:3600,consignment:15,targetMargin:20,directMarkup:15,fullSizeMarkup:15,roundTo:1000},
+    {name:"FAKHAR BLACK",mode:"consignment",category:"UAE",fullPrice:120000,bottleMl:100,decantMl:10,wastage:5,packCost:3600,consignment:15,targetMargin:20,directMarkup:15,fullSizeMarkup:15,roundTo:1000},
+    {name:"HUAWAS MAJESTIC",mode:"consignment",category:"UAE",fullPrice:200000,bottleMl:100,decantMl:10,wastage:5,packCost:3600,consignment:15,targetMargin:20,directMarkup:15,fullSizeMarkup:15,roundTo:1000},
+    {name:"YARA CANDY",mode:"consignment",category:"UAE",fullPrice:120000,bottleMl:100,decantMl:10,wastage:5,packCost:3600,consignment:15,targetMargin:20,directMarkup:15,fullSizeMarkup:15,roundTo:1000},
+    {name:"RARE REEF",mode:"consignment",category:"UAE",fullPrice:170000,bottleMl:100,decantMl:10,wastage:5,packCost:3600,consignment:15,targetMargin:20,directMarkup:15,fullSizeMarkup:15,roundTo:1000},
+    {name:"HUAWAS FOR HIM",mode:"consignment",category:"UAE",fullPrice:168000,bottleMl:100,decantMl:10,wastage:5,packCost:3600,consignment:15,targetMargin:20,directMarkup:15,fullSizeMarkup:15,roundTo:1000},
+    {name:"HUAWAS ICE",mode:"consignment",category:"UAE",fullPrice:185000,bottleMl:100,decantMl:10,wastage:5,packCost:3600,consignment:15,targetMargin:20,directMarkup:15,fullSizeMarkup:15,roundTo:1000},
+    {name:"ANGHAM",mode:"direct",category:"UAE",fullPrice:140000,bottleMl:100,decantMl:2,wastage:5,packCost:3600,consignment:15,targetMargin:20,directMarkup:15,fullSizeMarkup:15,roundTo:1000},
+    {name:"BEACH PARTY",mode:"direct",category:"UAE",fullPrice:148000,bottleMl:100,decantMl:2,wastage:5,packCost:3600,consignment:15,targetMargin:20,directMarkup:15,fullSizeMarkup:15,roundTo:1000},
+    {name:"YUM YUM",mode:"direct",category:"UAE",fullPrice:195000,bottleMl:100,decantMl:2,wastage:5,packCost:3600,consignment:15,targetMargin:20,directMarkup:15,fullSizeMarkup:15,roundTo:1000},
+    {name:"TURATIC ELECTRIC",mode:"direct",category:"UAE",fullPrice:155000,bottleMl:100,decantMl:2,wastage:5,packCost:3600,consignment:15,targetMargin:20,directMarkup:15,fullSizeMarkup:15,roundTo:1000},
+    {name:"KAMARAH WAHA",mode:"direct",category:"UAE",fullPrice:200000,bottleMl:100,decantMl:2,wastage:5,packCost:3600,consignment:15,targetMargin:20,directMarkup:15,fullSizeMarkup:15,roundTo:1000},
+    {name:"RAYHAM PACIFIC AURA",mode:"direct",category:"UAE",fullPrice:120000,bottleMl:100,decantMl:2,wastage:5,packCost:3600,consignment:15,targetMargin:20,directMarkup:15,fullSizeMarkup:15,roundTo:1000}
   ];
   localStorage.setItem(SAVED_KEY,JSON.stringify(starter));
 })();
@@ -2101,8 +2468,7 @@ $("copyBtn").addEventListener("click",async()=>{
 window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferredPrompt=e;$("installBtn").classList.remove("hidden");});
 $("installBtn").addEventListener("click",async()=>{if(!deferredPrompt)return;deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;$("installBtn").classList.add("hidden");});
 
-
-$("pricingModule").classList.remove("hidden"); $("creditModule").classList.add("hidden"); if($("bundleModule")) $("bundleModule").classList.add("hidden"); if($("adminModule")) $("adminModule").classList.add("hidden"); updateModeUI();calculate();renderSaved();renderSavedPicker();renderAdminPicker();renderBundlePickers();syncBundleBottleCost();calculateBundle();updateAdminLiveBadge();updateBundleLiveBadge();
+$("pricingModule").classList.remove("hidden"); $("creditModule").classList.add("hidden"); if($("bundleModule")) $("bundleModule").classList.add("hidden"); if($("adminModule")) $("adminModule").classList.add("hidden"); updateModeUI();calculate();renderSaved();renderSavedPicker();renderAdminPicker();renderBulkCategoryUI();renderBundlePickers();syncBundleBottleCost();calculateBundle();updateAdminLiveBadge();updateBundleLiveBadge();
 window.loadItem=loadItem;window.deleteItem=deleteItem;
 window.getSavedPerfumes=getSaved;
 
@@ -2298,8 +2664,6 @@ function recoverLegacyCredits({silent=false}={}){
     });
   }
 
-  // Also recover from any old app backup object stored in localStorage,
-  // but only when it explicitly contains creditSales/credits.
   try{
     for(let i=0;i<localStorage.length;i++){
       const key=localStorage.key(i);
@@ -2325,8 +2689,6 @@ function recoverLegacyCredits({silent=false}={}){
     }
   }catch{}
 
-  // V30.7 fallback: merge the user's previously backed-up Credit Sale records.
-  // This only adds missing records and will not duplicate existing ones.
   const backupAdded=recoverBackupCreditPack(merged,fingerprints);
   added += backupAdded;
 
@@ -2474,8 +2836,6 @@ document.querySelectorAll(".credit-filter").forEach(btn=>btn.addEventListener("c
 if($("clearPaidCredits")) $("clearPaidCredits").addEventListener("click",clearPaidCredits);
 if($("recoverOldCredits")) $("recoverOldCredits").addEventListener("click",()=>recoverLegacyCredits({silent:false}));
 
-// Auto-recover old-version Credit Sale on the SAME website/domain/browser.
-// Credit data stays local/private; it is never sent to Google Sheet or LIVE database.
 const creditRecoveryResult=recoverLegacyCredits({silent:true});
 if(creditRecoveryResult.total>0){
   creditFilter="all";
@@ -2484,7 +2844,6 @@ if(creditRecoveryResult.total>0){
 renderCredits();
 window.setCreditPaid=setCreditPaid;
 window.deleteCredit=deleteCredit;
-
-</script>
+  </script>
 </body>
 </html>
