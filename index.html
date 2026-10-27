@@ -7,7 +7,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
-  <!-- V30.9 LEFTOVER BOTTLE + BULK CATEGORY UPDATE: hardened single-file build -->
+  <!-- V30.9.1 LEFTOVER DEFAULT MARGIN: hardened single-file build -->
   <title>Perfume Calculator • LIVE</title>
   <style>
 *{box-sizing:border-box}
@@ -81,7 +81,6 @@ body{min-height:100vh;min-height:100dvh}button,input{font:inherit}button{cursor:
 .bulk-divider{margin:20px 0 16px;border-top:1px dashed var(--border);padding-top:16px}
 
 /* V30 Bundle Set */
-.segmented.six{grid-template-columns:repeat(6,1fr)}
 .bundle-controls{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
 .bundle-controls select,.bundle-slot select{width:100%;border:1px solid var(--border);border-radius:14px;padding:12px 13px;background:var(--soft);font:inherit;outline:none}
 .bundle-slots{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-top:14px}
@@ -129,7 +128,7 @@ body{min-height:100vh;min-height:100dvh}button,input{font:inherit}button{cursor:
       <div>
         <p class="eyebrow">PERFUME PRICE TOOL</p>
         <h1>Perfume Calculator</h1>
-        <p class="sub">ပုလင်းလက်ကျန်ဖြတ် • Bulk Category Update • Bundle Set • editable Margin • LIVE sync.</p>
+        <p class="sub">ပုလင်းလက်ကျန်ဖြတ် Default Margin • Bulk Category Update • Bundle Set • editable Margin • LIVE sync.</p>
       </div>
       <button id="installBtn" class="ghost hidden">Install App</button>
     </header>
@@ -326,7 +325,7 @@ body{min-height:100vh;min-height:100dvh}button,input{font:inherit}button{cursor:
     </section>
     </div>
 
-    <!-- NEW: LEFTOVER BOTTLE CALCULATOR (ပုလင်းလက်ကျန်ဖြတ်) -->
+    <!-- LEFTOVER BOTTLE CALCULATOR (ပုလင်းလက်ကျန်ဖြတ်) -->
     <section id="leftoverModule" class="card hidden">
       <div class="section-head">
         <div>
@@ -381,9 +380,21 @@ body{min-height:100vh;min-height:100dvh}button,input{font:inherit}button{cursor:
           </select>
         </label>
 
+        <!-- ENHANCED: Leftover Direct Margin with Default & Presets -->
         <label>
-          <span>Direct Margin (%)</span>
-          <input id="loDirectMargin" type="number" min="0" max="100" step="0.5" value="15" />
+          <span>Direct Margin (%) — Default သတ်မှတ်နိုင်</span>
+          <div style="display:flex;gap:6px;align-items:center">
+            <input id="loDirectMargin" type="number" min="0" max="100" step="0.5" value="15" style="flex:1" />
+            <select id="loDirectMarginPreset" style="width:105px;padding:12px 6px">
+              <option value="10">10%</option>
+              <option value="15" selected>15%</option>
+              <option value="20">20%</option>
+              <option value="25">25%</option>
+              <option value="30">30%</option>
+              <option value="custom">Custom</option>
+            </select>
+          </div>
+          <small style="color:var(--muted);font-size:11px">နောက်ဆုံးသုံးထားသော Margin ကို ဒီ device တွင် အလိုအလျောက် Default မှတ်ထားပေးသည်</small>
         </label>
 
         <label>
@@ -854,7 +865,7 @@ body{min-height:100vh;min-height:100dvh}button,input{font:inherit}button{cursor:
       <div id="creditList" class="credit-list"></div>
     </section>
 
-    <footer><p>Perfume Calculator V30.9 • ပုလင်းလက်ကျန်ဖြတ် • Bulk Category Update • LIVE Sheet • Single-file</p></footer>
+    <footer><p>Perfume Calculator V30.9.1 • ပုလင်းလက်ကျန်ဖြတ် Default Margin • LIVE Sheet • Single-file</p></footer>
   </main>
 
   <script>
@@ -1200,7 +1211,7 @@ document.querySelectorAll(".seg").forEach(btn=>btn.addEventListener("click",()=>
   if(isCredit){ renderCredits(); return; }
   if(isBundle){ renderBundlePickers(); syncBundleBottleCost(); calculateBundle(); updateBundleLiveBadge(); return; }
   if(isLeftover){
-    // If a perfume is currently loaded in the main form, pre-fill it into leftover
+    restoreLeftoverDefaultMargin();
     const currentName = String($("name")?.value||"").trim();
     if(currentName && (!$("loName")?.value || $("loName").value === "Hawas Ice")){
       const match = getPerfumeCatalog().find(x=>String(x.name||"").trim().toLowerCase()===currentName.toLowerCase());
@@ -1312,6 +1323,38 @@ function getPerfumeCatalog(){
 }
 
 // ---------------- Leftover Bottle Module (ပုလင်းလက်ကျန်ဖြတ်) ----------------
+const LEFTOVER_DIRECT_MARGIN_KEY = "perfumeLoDirectMarginDefaultV1";
+
+function leftoverDirectMarginDefault(){
+  let v = 15;
+  try {
+    const saved = Number(localStorage.getItem(LEFTOVER_DIRECT_MARGIN_KEY));
+    if(Number.isFinite(saved) && saved >= 0) v = saved;
+  }catch{}
+  return v;
+}
+
+function rememberLeftoverDirectMargin(val){
+  const v = Number(val);
+  if(Number.isFinite(v) && v >= 0){
+    try { localStorage.setItem(LEFTOVER_DIRECT_MARGIN_KEY, String(v)); }catch{}
+  }
+}
+
+function restoreLeftoverDefaultMargin(){
+  const def = leftoverDirectMarginDefault();
+  if($("loDirectMargin")) $("loDirectMargin").value = String(def);
+  syncLeftoverPreset(def);
+}
+
+function syncLeftoverPreset(val){
+  const presetSel = $("loDirectMarginPreset");
+  if(!presetSel) return;
+  const s = String(val);
+  if(["10","15","20","25","30"].includes(s)) presetSel.value = s;
+  else presetSel.value = "custom";
+}
+
 function updateLeftoverLiveBadge(){
   const badge=$("leftoverLiveBadge");
   if(!badge) return;
@@ -1350,7 +1393,20 @@ function applyPerfumeToLeftover(p){
   if($("loName")) $("loName").value=p.name||"";
   if($("loFullPrice")) $("loFullPrice").value=Number(p.fullPrice||0);
   if($("loBottleMl")) $("loBottleMl").value=Number(p.bottleMl||100);
-  if(p.directMarkup!==undefined && $("loDirectMargin")) $("loDirectMargin").value=p.directMarkup;
+
+  // Smart Default for Direct Margin:
+  // 1. If perfume has saved directMarkup, use it.
+  // 2. If UAE category, default to 30%.
+  // 3. Otherwise use the remembered Leftover Direct Margin default.
+  let targetDirect = leftoverDirectMarginDefault();
+  if(p.directMarkup !== undefined && Number(p.directMarkup) > 0){
+    targetDirect = Number(p.directMarkup);
+  } else if(String(p.category||"").toUpperCase() === "UAE"){
+    targetDirect = 30;
+  }
+  if($("loDirectMargin")) $("loDirectMargin").value = String(targetDirect);
+  syncLeftoverPreset(targetDirect);
+
   if(p.targetMargin!==undefined && $("loConsignMargin")) $("loConsignMargin").value=p.targetMargin;
   if(p.consignment!==undefined && $("loConsignFee")) $("loConsignFee").value=p.consignment;
   calculateLeftover();
@@ -1360,13 +1416,11 @@ function calcSingleLeftover(mlSize, fullPrice, bottleMl, bottleValue, directMarg
   const liquidCost = (bottleMl > 0 && mlSize > 0) ? (fullPrice / bottleMl) * mlSize : 0;
   const baseCost = liquidCost + bottleValue;
 
-  // Direct calculation
   const directProfit = baseCost * (directMargin / 100);
   const directBeforeDeli = baseCost + directProfit;
   const directWithDeli = directBeforeDeli + deliAmount;
   const directRecommended = roundUp(directWithDeli, roundTo);
 
-  // Consignment calculation
   const cFee = consignFee / 100;
   const cMargin = consignMargin / 100;
   const denom = (1 - cFee) * (1 - cMargin);
@@ -1439,7 +1493,6 @@ function calculateLeftover(){
     $("loFormulaText").textContent = `Consignment = Base Cost (${ks(cur.baseCost)}) ÷ [(1 − ${consignFee}%) × (1 − ${consignMargin}%)] = ${ks(cur.consignRecommended)}. Net Receipt = ${ks(cur.consignNetReceipt)} • Profit = ${ks(cur.consignNetProfit)}.`;
   }
 
-  // Render Leftover Table Grid for standard sizes
   const tableRoot = $("loTableGrid");
   if(tableRoot){
     tableRoot.innerHTML = LEFTOVER_QUICK_ML.map(sz=>{
@@ -1457,7 +1510,7 @@ function calculateLeftover(){
 }
 
 // Leftover event listeners
-["loFullPrice","loBottleMl","loRemainingMl","loBottleValue","loDirectMargin","loConsignMargin","loConsignFee","loDelivery"].forEach(id=>{
+["loFullPrice","loBottleMl","loRemainingMl","loBottleValue","loConsignMargin","loConsignFee","loDelivery"].forEach(id=>{
   const el=$(id);
   if(el){
     el.addEventListener("input",()=>{
@@ -1469,6 +1522,30 @@ function calculateLeftover(){
     });
   }
 });
+
+if($("loDirectMargin")){
+  $("loDirectMargin").addEventListener("input",()=>{
+    const v = Number($("loDirectMargin").value);
+    if(Number.isFinite(v) && v >= 0){
+      rememberLeftoverDirectMargin(v);
+      syncLeftoverPreset(v);
+    }
+    calculateLeftover();
+  });
+}
+
+if($("loDirectMarginPreset")){
+  $("loDirectMarginPreset").addEventListener("change",()=>{
+    const p = $("loDirectMarginPreset").value;
+    if(p !== "custom"){
+      const v = Number(p);
+      $("loDirectMargin").value = String(v);
+      rememberLeftoverDirectMargin(v);
+      calculateLeftover();
+    }
+  });
+}
+
 if($("loSaleMode")) $("loSaleMode").addEventListener("change",calculateLeftover);
 if($("loIncludeDeli")) $("loIncludeDeli").addEventListener("change",calculateLeftover);
 if($("loRoundTo")) $("loRoundTo").addEventListener("change",calculateLeftover);
@@ -1479,6 +1556,7 @@ if($("loadLeftoverSelectedBtn")) $("loadLeftoverSelectedBtn").addEventListener("
   const p=getPerfumeCatalog().find(x=>String(x.name||"").trim().toLowerCase()===val);
   if(p) applyPerfumeToLeftover(p);
 });
+
 document.querySelectorAll("#loQuickSizes button").forEach(btn=>{
   btn.addEventListener("click",()=>{
     $("loRemainingMl").value=btn.dataset.size;
@@ -1487,11 +1565,12 @@ document.querySelectorAll("#loQuickSizes button").forEach(btn=>{
     calculateLeftover();
   });
 });
+
 if($("loResetBtn")) $("loResetBtn").addEventListener("click",()=>{
   $("loRemainingMl").value="35";
   $("loBottleValue").value="0";
   $("loSaleMode").value="direct";
-  $("loDirectMargin").value="15";
+  restoreLeftoverDefaultMargin();
   $("loConsignMargin").value="25";
   $("loConsignFee").value="15";
   $("loIncludeDeli").checked=true;
@@ -1500,6 +1579,7 @@ if($("loResetBtn")) $("loResetBtn").addEventListener("click",()=>{
   document.querySelectorAll("#loQuickSizes button").forEach(b=>b.classList.toggle("active",b.dataset.size==="35"));
   calculateLeftover();
 });
+
 if($("loCopyBtn")) $("loCopyBtn").addEventListener("click",async()=>{
   const r=calculateLeftover();
   if(!r) return;
@@ -2764,6 +2844,7 @@ function refreshLiveSheet(force=false){
 
 syncPackCostToSelectedSize({showNote:false});
 restoreFullSizeMargin();
+restoreLeftoverDefaultMargin();
 migrateLegacySaved();
 
 (function seedStarterPerfumes(){
