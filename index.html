@@ -7,7 +7,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
-  <!-- V30.8 BULK CATEGORY UPDATE: hardened single-file build -->
+  <!-- V30.9 LEFTOVER BOTTLE + BULK CATEGORY UPDATE: hardened single-file build -->
   <title>Perfume Calculator • LIVE</title>
   <style>
 *{box-sizing:border-box}
@@ -40,18 +40,16 @@ body{min-height:100vh;min-height:100dvh}button,input{font:inherit}button{cursor:
 @media(max-width:520px){.saved-picker-row{align-items:stretch;flex-direction:column}.saved-picker-row button{width:100%}.saved-toolbar{justify-content:flex-end}}
 
 /* V12 Cloudflare Live / Admin */
-.segmented.five{grid-template-columns:repeat(5,1fr)}
+.segmented.seven{grid-template-columns:repeat(7,1fr)}
 .live-badge{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;padding:7px 10px;font-size:12px;font-weight:900;white-space:nowrap;border:1px solid var(--border)}
 .live-badge.online{background:#ecfdf5;color:#047857;border-color:#a7f3d0}.live-badge.offline{background:#fff7ed;color:#9a3412;border-color:#fed7aa}.live-badge.error{background:#fef2f2;color:#b91c1c;border-color:#fecaca}
 .setup-notice{border:1px dashed #f59e0b;background:#fffbeb;border-radius:14px;padding:12px 13px;color:#92400e;font-size:13px;line-height:1.5}.setup-notice.connected{border-color:#a7f3d0;background:#ecfdf5;color:#047857}
 .admin-login-row{display:grid;grid-template-columns:1fr 1fr auto;gap:10px}.admin-login-row input{background:#fff}.primary-btn{border:0;background:#111827;color:#fff;border-radius:12px;padding:10px 14px;font-weight:900}.primary-btn:disabled,.secondary:disabled{opacity:.45;cursor:not-allowed}.admin-editor-actions{display:flex;gap:9px;justify-content:flex-end;flex-wrap:wrap;margin-top:14px}.admin-msg{min-height:20px;margin:8px 0 0;color:var(--muted);font-size:13px}.admin-msg.error{color:var(--danger)}.admin-msg.success{color:#047857}.admin-locked{position:relative}.admin-locked:after{content:"Admin login required";display:block;margin-top:12px;text-align:center;color:var(--muted);font-size:12px}.admin-locked.unlocked:after{display:none}
 .live-row{display:flex;align-items:center;justify-content:space-between;gap:12px;border:1px solid var(--border);border-radius:14px;padding:11px 12px}.live-row .meta{min-width:0}.live-row strong{display:block}.live-row small{color:var(--muted)}.live-actions{display:flex;gap:7px;flex-wrap:wrap}.live-actions button{border:1px solid var(--border);background:#fff;border-radius:10px;padding:7px 9px;font-weight:800}.live-actions .delete-live{color:var(--danger)}.live-tag{display:inline-block;margin-left:6px;border-radius:999px;padding:2px 6px;font-size:10px;font-weight:900;background:#ecfdf5;color:#047857;vertical-align:middle}
-@media(max-width:760px){.segmented.five{grid-template-columns:repeat(3,1fr)}.admin-login-row{grid-template-columns:1fr}.admin-login-row .primary-btn{width:100%}}
-@media(max-width:520px){.segmented.five{grid-template-columns:repeat(2,1fr)}.live-row{align-items:flex-start;flex-direction:column}.live-actions{width:100%}.live-actions button{flex:1}}
-
-/* V12 Cloudflare Live */
-.cloudflare-login-row{grid-template-columns:1fr auto}
-@media(max-width:760px){.cloudflare-login-row{grid-template-columns:1fr}.cloudflare-login-row .primary-btn{width:100%}}
+@media(max-width:960px){.segmented.seven{grid-template-columns:repeat(4,1fr)}}
+@media(max-width:760px){.admin-login-row{grid-template-columns:1fr}.admin-login-row .primary-btn{width:100%}}
+@media(max-width:650px){.segmented.seven{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:520px){.segmented.seven{grid-template-columns:repeat(2,1fr)}.live-row{align-items:flex-start;flex-direction:column}.live-actions{width:100%}.live-actions button{flex:1}}
 
 .live-sheet-status{font-size:12px;font-weight:800;margin:6px 0 0;color:#92400e}.live-sheet-status.ok{color:#047857}.live-sheet-status.error{color:#b45309}
 
@@ -104,19 +102,23 @@ body{min-height:100vh;min-height:100dvh}button,input{font:inherit}button{cursor:
 .bundle-msg.error{color:#b91c1c}.bundle-msg.success{color:#047857}
 .bundle-actions{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;margin-top:12px}
 @media(max-width:900px){
-  .segmented.six{grid-template-columns:repeat(3,1fr)}
   .bundle-slots{grid-template-columns:repeat(2,minmax(0,1fr))}
   .bundle-controls{grid-template-columns:repeat(2,minmax(0,1fr))}
   .bundle-breakdown{grid-template-columns:repeat(3,minmax(0,1fr))}
 }
 @media(max-width:520px){
-  .segmented.six{grid-template-columns:repeat(2,1fr)}
   .bundle-slots,.bundle-controls{grid-template-columns:1fr}
   .bundle-breakdown{grid-template-columns:repeat(2,minmax(0,1fr))}
   .bundle-item-row{grid-template-columns:1fr 1fr}
   .bulk-preview-item{flex-direction:column;align-items:flex-start}
   .bulk-preview-right{text-align:left;padding-left:25px}
 }
+
+/* V30.9 Leftover Module */
+.leftover-controls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.leftover-controls select{width:100%;border:1px solid var(--border);border-radius:14px;padding:12px 13px;background:var(--soft);font:inherit;outline:none}
+@media(max-width:820px){.leftover-controls{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:520px){.leftover-controls{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
@@ -127,7 +129,7 @@ body{min-height:100vh;min-height:100dvh}button,input{font:inherit}button{cursor:
       <div>
         <p class="eyebrow">PERFUME PRICE TOOL</p>
         <h1>Perfume Calculator</h1>
-        <p class="sub">Bulk Category Update ပါပြီ • Bundle Set • Perfume ၅ မျိုး • editable Margin • Bottle size cost memory.</p>
+        <p class="sub">ပုလင်းလက်ကျန်ဖြတ် • Bulk Category Update • Bundle Set • editable Margin • LIVE sync.</p>
       </div>
       <button id="installBtn" class="ghost hidden">Install App</button>
     </header>
@@ -139,10 +141,11 @@ body{min-height:100vh;min-height:100dvh}button,input{font:inherit}button{cursor:
           <p>Choose one pricing module</p>
         </div>
       </div>
-      <div class="segmented six">
+      <div class="segmented seven">
         <button class="seg active" data-mode="consignment">Consignment</button>
         <button class="seg" data-mode="direct">Direct</button>
         <button class="seg" data-mode="fullsize">Full Size</button>
+        <button class="seg" data-mode="leftover">လက်ကျန်ဖြတ်</button>
         <button class="seg" data-mode="bundle">Bundle Set</button>
         <button class="seg" data-mode="credit">Credit Sale</button>
         <button class="seg" data-mode="admin">Admin</button>
@@ -323,6 +326,153 @@ body{min-height:100vh;min-height:100dvh}button,input{font:inherit}button{cursor:
     </section>
     </div>
 
+    <!-- NEW: LEFTOVER BOTTLE CALCULATOR (ပုလင်းလက်ကျန်ဖြတ်) -->
+    <section id="leftoverModule" class="card hidden">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">PARTIAL / LEFTOVER BOTTLE</p>
+          <h2>ပုလင်းလက်ကျန်ဖြတ် Calculator</h2>
+          <p>မူရင်းပုလင်းထဲ လက်ကျန် ml အလိုက် Direct နှင့် Consignment ရောင်းဈေး အလိုအလျောက်တွက်မည်။</p>
+        </div>
+        <span id="leftoverLiveBadge" class="live-badge offline">CONNECTING</span>
+      </div>
+
+      <!-- Perfume Picker for Leftover -->
+      <div class="saved-search-wrap">
+        <input id="leftoverPerfumeSearch" type="search" placeholder="Perfume name ရိုက်ရှာပါ..." autocomplete="off" />
+      </div>
+      <div class="saved-picker-row">
+        <select id="leftoverPerfumeSelect" aria-label="Select perfume for leftover"></select>
+        <button id="loadLeftoverSelectedBtn" class="secondary" type="button">Load Perfume</button>
+      </div>
+
+      <div class="leftover-controls" style="margin-top:14px">
+        <label>
+          <span>Perfume Name</span>
+          <input id="loName" type="text" placeholder="e.g. Hawas Ice" />
+        </label>
+
+        <label>
+          <span>Full Bottle Cost (Ks)</span>
+          <input id="loFullPrice" type="number" min="0" step="1000" value="185000" />
+        </label>
+
+        <label>
+          <span>Original Bottle Size (ml)</span>
+          <input id="loBottleMl" type="number" min="1" step="1" value="100" />
+        </label>
+
+        <label>
+          <span>လက်ကျန်ပမာဏ (Remaining ml) *</span>
+          <input id="loRemainingMl" type="number" min="0.5" step="0.5" value="35" />
+        </label>
+
+        <label>
+          <span>မူရင်းပုလင်းခွံ / Box တန်ဖိုး (Ks)</span>
+          <input id="loBottleValue" type="number" min="0" step="500" value="0" />
+          <small style="color:var(--muted);font-size:11px">ပုလင်းခွံဖိုး မယူလိုလျှင် 0 ထားပါ • ပုလင်းလှ/သံဘူးတန်ဖိုး ထည့်လိုက ထည့်နိုင်</small>
+        </label>
+
+        <label>
+          <span>ရောင်းမည့် စနစ် (Mode)</span>
+          <select id="loSaleMode">
+            <option value="direct" selected>Direct Sale (Online / လက်လီ)</option>
+            <option value="consignment">Consignment (ဆိုင်တင်ရောင်း)</option>
+          </select>
+        </label>
+
+        <label>
+          <span>Direct Margin (%)</span>
+          <input id="loDirectMargin" type="number" min="0" max="100" step="0.5" value="15" />
+        </label>
+
+        <label>
+          <span>Consignment Target Margin (%)</span>
+          <input id="loConsignMargin" type="number" min="0" max="99" step="0.5" value="25" />
+        </label>
+
+        <label>
+          <span>Consignment Fee (%)</span>
+          <input id="loConsignFee" type="number" min="0" max="99" step="0.5" value="15" />
+        </label>
+
+        <label>
+          <span>Delivery Charge (Ks)</span>
+          <div style="display:flex;gap:8px;align-items:center">
+            <input id="loDelivery" type="number" min="0" step="500" value="5000" style="flex:1" />
+            <label style="flex-direction:row;align-items:center;gap:4px;font-size:12px;white-space:nowrap;margin:0">
+              <input type="checkbox" id="loIncludeDeli" checked style="width:16px;height:16px;accent-color:#111827" /> ပေါင်းမည်
+            </label>
+          </div>
+        </label>
+
+        <label>
+          <span>Round Price Up To (Ks)</span>
+          <select id="loRoundTo">
+            <option value="1000" selected>1,000 Ks</option>
+            <option value="500">500 Ks</option>
+            <option value="100">100 Ks</option>
+          </select>
+        </label>
+      </div>
+
+      <div id="loQuickSizes" class="quick-sizes">
+        <span>Quick လက်ကျန် ml:</span>
+        <button data-size="10">10ml</button>
+        <button data-size="15">15ml</button>
+        <button data-size="20">20ml</button>
+        <button data-size="25">25ml</button>
+        <button data-size="30">30ml</button>
+        <button data-size="35" class="active">35ml</button>
+        <button data-size="40">40ml</button>
+        <button data-size="45">45ml</button>
+        <button data-size="50">50ml</button>
+        <button data-size="60">60ml</button>
+        <button data-size="70">70ml</button>
+      </div>
+
+      <!-- Leftover Results -->
+      <div style="margin-top:14px">
+        <div class="price-hero">
+          <span id="loPriceHeroLabel">Direct Selling Price (Deli အပါ)</span>
+          <strong id="loSellingPrice">0 Ks</strong>
+          <small id="loHeroHint">35ml Liquid + ပုလင်းခွံ + Deli 5,000 Ks</small>
+        </div>
+
+        <div class="stats">
+          <div class="stat"><span>လက်ကျန်အရည် အရင်း</span><strong id="loLiquidCost">0 Ks</strong></div>
+          <div class="stat"><span>မူရင်းပုလင်းခွံ တန်ဖိုး</span><strong id="loBottleValStat">0 Ks</strong></div>
+          <div class="stat"><span>အရင်း စုစုပေါင်း</span><strong id="loBaseCost">0 Ks</strong></div>
+          <div class="stat highlight"><span>Margin Profit</span><strong id="loProfit">0 Ks</strong></div>
+          <div class="stat"><span>Direct ရောင်းဈေး</span><strong id="loDirectPriceStat">0 Ks</strong></div>
+          <div class="stat"><span>Consignment ရောင်းဈေး</span><strong id="loConsignPriceStat">0 Ks</strong></div>
+          <div class="stat"><span>Consign ရငွေ (Net)</span><strong id="loNetReceiptStat">0 Ks</strong></div>
+          <div class="stat"><span>အရင်း ကာမိမှု %</span><strong id="loRecoveryPct">0%</strong></div>
+        </div>
+
+        <!-- Quick ml Leftover Table -->
+        <div class="ml-prices">
+          <div class="ml-prices-head">
+            <div>
+              <h3>ml အလိုက် လက်ကျန်ဖြတ် ရောင်းဈေးများ</h3>
+              <p>မူရင်းပုလင်း လက်ကျန်အလိုက် Direct နှင့် Consignment ဈေးနှုန်းများကို တစ်ပြိုင်နက်ကြည့်ရန်</p>
+            </div>
+          </div>
+          <div id="loTableGrid" class="ml-price-grid"></div>
+        </div>
+
+        <div class="formula">
+          <strong>Leftover Formula</strong>
+          <p id="loFormulaText"></p>
+        </div>
+
+        <div class="bundle-actions">
+          <button id="loResetBtn" class="secondary" type="button">Reset Leftover</button>
+          <button id="loCopyBtn" class="primary-btn" type="button">Copy Leftover Summary</button>
+        </div>
+      </div>
+    </section>
+
     <section id="bundleModule" class="card hidden">
       <div class="section-head">
         <div>
@@ -491,7 +641,7 @@ body{min-height:100vh;min-height:100dvh}button,input{font:inherit}button{cursor:
         <p class="admin-msg">Password ကို ရိုက်တာနဲ့ ဒီ device/browser မှာ အလိုအလျောက်မှတ်ထားမယ်။ + New / Create တိုင်း Unlock ထပ်နှိပ်စရာမလိုပါ။ Shared device ဆို Forget Password ကိုနှိပ်ပါ။</p>
       </div>
 
-      <!-- NEW: BULK CATEGORY PRICE & MARGIN UPDATE -->
+      <!-- BULK CATEGORY PRICE & MARGIN UPDATE -->
       <div class="bulk-box">
         <div class="bulk-box-head">
           <div>
@@ -704,7 +854,7 @@ body{min-height:100vh;min-height:100dvh}button,input{font:inherit}button{cursor:
       <div id="creditList" class="credit-list"></div>
     </section>
 
-    <footer><p>Perfume Calculator V30.8 BULK CATEGORY UPDATE • In-App Admin • Google Sheet LIVE • Single-file</p></footer>
+    <footer><p>Perfume Calculator V30.9 • ပုလင်းလက်ကျန်ဖြတ် • Bulk Category Update • LIVE Sheet • Single-file</p></footer>
   </main>
 
   <script>
@@ -722,6 +872,7 @@ const showAppError=(message)=>{
 window.addEventListener("error",e=>{ if(e && e.message && !/Script error\.?/i.test(e.message)) showAppError(e.message); });
 window.addEventListener("unhandledrejection",e=>{ const m=e?.reason?.message||e?.reason; if(m) showAppError(m); });
 const STANDARD_ML = [1,2,3,5,8,10,15,20,30,50];
+const LEFTOVER_QUICK_ML = [10,15,20,25,30,35,40,45,50,60,70];
 const ids = ["name","fullPrice","bottleMl","decantMl","wastage","packCost","consignment","targetMargin","directMarkup","fullSizeMarkup","deliveryCharge","roundTo"];
 let mode = "consignment";
 let lastPricingMode = "consignment";
@@ -824,6 +975,7 @@ function setPricingMode(which){
   $("pricingModule").classList.remove("hidden");
   $("creditModule").classList.add("hidden");
   if($("bundleModule")) $("bundleModule").classList.add("hidden");
+  if($("leftoverModule")) $("leftoverModule").classList.add("hidden");
   if($("adminModule")) $("adminModule").classList.add("hidden");
   updateModeUI();
   calculate();
@@ -1038,14 +1190,30 @@ document.querySelectorAll(".seg").forEach(btn=>btn.addEventListener("click",()=>
   const isCredit=chosen==="credit";
   const isAdmin=chosen==="admin";
   const isBundle=chosen==="bundle";
-  $("pricingModule").classList.toggle("hidden",isCredit||isAdmin||isBundle);
+  const isLeftover=chosen==="leftover";
+  $("pricingModule").classList.toggle("hidden",isCredit||isAdmin||isBundle||isLeftover);
   $("creditModule").classList.toggle("hidden",!isCredit);
   if($("bundleModule")) $("bundleModule").classList.toggle("hidden",!isBundle);
+  if($("leftoverModule")) $("leftoverModule").classList.toggle("hidden",!isLeftover);
   if($("adminModule")) $("adminModule").classList.toggle("hidden",!isAdmin);
+
   if(isCredit){ renderCredits(); return; }
   if(isBundle){ renderBundlePickers(); syncBundleBottleCost(); calculateBundle(); updateBundleLiveBadge(); return; }
+  if(isLeftover){
+    // If a perfume is currently loaded in the main form, pre-fill it into leftover
+    const currentName = String($("name")?.value||"").trim();
+    if(currentName && (!$("loName")?.value || $("loName").value === "Hawas Ice")){
+      const match = getPerfumeCatalog().find(x=>String(x.name||"").trim().toLowerCase()===currentName.toLowerCase());
+      if(match) applyPerfumeToLeftover(match);
+    }
+    renderLeftoverPicker();
+    calculateLeftover();
+    updateLeftoverLiveBadge();
+    return;
+  }
   if(isAdmin){ renderAdminPicker(); renderBulkCategoryUI(); updateAdminLiveBadge(); return; }
 }));
+
 document.querySelectorAll(".quick-sizes button").forEach(btn=>btn.addEventListener("click",()=>{
   $("decantMl").value=btn.dataset.size;
   document.querySelectorAll(".quick-sizes button").forEach(b=>b.classList.remove("active"));
@@ -1143,6 +1311,215 @@ function getPerfumeCatalog(){
   return out;
 }
 
+// ---------------- Leftover Bottle Module (ပုလင်းလက်ကျန်ဖြတ်) ----------------
+function updateLeftoverLiveBadge(){
+  const badge=$("leftoverLiveBadge");
+  if(!badge) return;
+  if(liveSheetReady){
+    badge.textContent=`LIVE • ${getPerfumeCatalog().length}`;
+    badge.className="live-badge online";
+  }else if(navigator.onLine===false){
+    badge.textContent="OFFLINE";
+    badge.className="live-badge error";
+  }else{
+    badge.textContent="FALLBACK";
+    badge.className="live-badge offline";
+  }
+}
+
+function renderLeftoverPicker(){
+  const sel=$("leftoverPerfumeSelect"), searchEl=$("leftoverPerfumeSearch");
+  if(!sel) return;
+  const catalog=getPerfumeCatalog().slice().sort((a,b)=>String(a.name||"").localeCompare(String(b.name||""),undefined,{sensitivity:"base"}));
+  const q=String(searchEl?.value||"").trim().toLowerCase();
+  let list=catalog;
+  if(q) list=catalog.filter(x=>String(x.name||"").toLowerCase().includes(q));
+
+  const prev=sel.value;
+  sel.innerHTML='<option value="">— Perfume ရွေးပါ —</option>'+list.map(x=>{
+    const key=String(x.name||"").trim().toLowerCase();
+    return `<option value="${escapeHtml(key)}">${escapeHtml(x.name)} — ${Number(x.fullPrice||0).toLocaleString()} Ks (${x.bottleMl||100}ml)</option>`;
+  }).join("");
+
+  if(prev && Array.from(sel.options).some(o=>o.value===prev)) sel.value=prev;
+  else if(q && list.length) sel.value=String(list[0].name||"").trim().toLowerCase();
+}
+
+function applyPerfumeToLeftover(p){
+  if(!p) return;
+  if($("loName")) $("loName").value=p.name||"";
+  if($("loFullPrice")) $("loFullPrice").value=Number(p.fullPrice||0);
+  if($("loBottleMl")) $("loBottleMl").value=Number(p.bottleMl||100);
+  if(p.directMarkup!==undefined && $("loDirectMargin")) $("loDirectMargin").value=p.directMarkup;
+  if(p.targetMargin!==undefined && $("loConsignMargin")) $("loConsignMargin").value=p.targetMargin;
+  if(p.consignment!==undefined && $("loConsignFee")) $("loConsignFee").value=p.consignment;
+  calculateLeftover();
+}
+
+function calcSingleLeftover(mlSize, fullPrice, bottleMl, bottleValue, directMargin, consignFee, consignMargin, deliAmount, roundTo){
+  const liquidCost = (bottleMl > 0 && mlSize > 0) ? (fullPrice / bottleMl) * mlSize : 0;
+  const baseCost = liquidCost + bottleValue;
+
+  // Direct calculation
+  const directProfit = baseCost * (directMargin / 100);
+  const directBeforeDeli = baseCost + directProfit;
+  const directWithDeli = directBeforeDeli + deliAmount;
+  const directRecommended = roundUp(directWithDeli, roundTo);
+
+  // Consignment calculation
+  const cFee = consignFee / 100;
+  const cMargin = consignMargin / 100;
+  const denom = (1 - cFee) * (1 - cMargin);
+  const consignTarget = denom > 0 ? baseCost / denom : 0;
+  const consignRecommended = roundUp(consignTarget, roundTo);
+  const consignFeeAmount = consignRecommended * cFee;
+  const consignNetReceipt = consignRecommended - consignFeeAmount;
+  const consignNetProfit = consignNetReceipt - baseCost;
+
+  return {
+    mlSize,
+    liquidCost,
+    baseCost,
+    directProfit,
+    directBeforeDeli,
+    directRecommended,
+    consignRecommended,
+    consignFeeAmount,
+    consignNetReceipt,
+    consignNetProfit
+  };
+}
+
+function calculateLeftover(){
+  if(!$("leftoverModule")) return null;
+
+  const name = String($("loName")?.value||"Perfume").trim();
+  const fullPrice = Math.max(0, n("loFullPrice"));
+  const bottleMl = Math.max(1, n("loBottleMl"));
+  const remainingMl = Math.max(0.1, n("loRemainingMl"));
+  const bottleValue = Math.max(0, n("loBottleValue"));
+  const saleMode = String($("loSaleMode")?.value||"direct");
+  const directMargin = Math.max(0, n("loDirectMargin"));
+  const consignMargin = Math.max(0, n("loConsignMargin"));
+  const consignFee = Math.max(0, n("loConsignFee"));
+  const includeDeli = $("loIncludeDeli")?.checked ?? true;
+  const deliAmount = includeDeli ? Math.max(0, n("loDelivery")) : 0;
+  const roundTo = Math.max(1, Number($("loRoundTo")?.value||1000));
+
+  const cur = calcSingleLeftover(remainingMl, fullPrice, bottleMl, bottleValue, directMargin, consignFee, consignMargin, deliAmount, roundTo);
+
+  const heroPrice = $("loSellingPrice");
+  const heroLabel = $("loPriceHeroLabel");
+  const heroHint = $("loHeroHint");
+
+  if(saleMode === "direct"){
+    heroLabel.textContent = includeDeli ? "Direct Selling Price (Deli အပါ)" : "Direct Selling Price (Deli မပါ)";
+    heroPrice.textContent = ks(cur.directRecommended);
+    heroHint.textContent = `${remainingMl}ml Liquid + ပုလင်းခွံ ${ks(bottleValue)}${includeDeli ? ` + Deli ${ks(deliAmount)}` : ""} • Margin ${directMargin}%`;
+  } else {
+    heroLabel.textContent = "Consignment Selling Price (ဆိုင်တင်ရောင်း)";
+    heroPrice.textContent = ks(cur.consignRecommended);
+    heroHint.textContent = `${remainingMl}ml Liquid • Fee ${consignFee}% • Target Margin ${consignMargin}%`;
+  }
+
+  $("loLiquidCost").textContent = ks(cur.liquidCost);
+  $("loBottleValStat").textContent = ks(bottleValue);
+  $("loBaseCost").textContent = ks(cur.baseCost);
+  $("loProfit").textContent = saleMode === "direct" ? ks(cur.directProfit) : ks(cur.consignNetProfit);
+  $("loDirectPriceStat").textContent = ks(cur.directRecommended);
+  $("loConsignPriceStat").textContent = ks(cur.consignRecommended);
+  $("loNetReceiptStat").textContent = ks(cur.consignNetReceipt);
+
+  const recoveryPct = fullPrice > 0 ? (cur.directRecommended / fullPrice) * 100 : 0;
+  $("loRecoveryPct").textContent = `${recoveryPct.toFixed(1)}%`;
+
+  if(saleMode === "direct"){
+    $("loFormulaText").textContent = `Direct = [Liquid Cost (${ks(cur.liquidCost)}) + ပုလင်းခွံ (${ks(bottleValue)})] × (1 + ${directMargin}%)${includeDeli ? ` + Deli ${ks(deliAmount)}` : ""} = ${ks(cur.directBeforeDeli + deliAmount)} → rounded up to ${ks(roundTo)} = ${ks(cur.directRecommended)}.`;
+  } else {
+    $("loFormulaText").textContent = `Consignment = Base Cost (${ks(cur.baseCost)}) ÷ [(1 − ${consignFee}%) × (1 − ${consignMargin}%)] = ${ks(cur.consignRecommended)}. Net Receipt = ${ks(cur.consignNetReceipt)} • Profit = ${ks(cur.consignNetProfit)}.`;
+  }
+
+  // Render Leftover Table Grid for standard sizes
+  const tableRoot = $("loTableGrid");
+  if(tableRoot){
+    tableRoot.innerHTML = LEFTOVER_QUICK_ML.map(sz=>{
+      const r = calcSingleLeftover(sz, fullPrice, bottleMl, bottleValue, directMargin, consignFee, consignMargin, deliAmount, roundTo);
+      const isCurrent = Math.abs(sz - remainingMl) < 0.1;
+      return `<div class="ml-price-card" style="${isCurrent?'border-color:#111827;background:#fffdf0;box-shadow:0 0 0 2px #111827':''}">
+        <span>${sz}ml ကျန်</span>
+        <strong style="font-size:17px">${ks(saleMode==='direct'?r.directRecommended:r.consignRecommended)}</strong>
+        <small>Direct: ${ks(r.directRecommended)}<br>Consign: ${ks(r.consignRecommended)}</small>
+      </div>`;
+    }).join("");
+  }
+
+  return {name, fullPrice, bottleMl, remainingMl, bottleValue, saleMode, directMargin, consignFee, consignMargin, deliAmount, roundTo, cur};
+}
+
+// Leftover event listeners
+["loFullPrice","loBottleMl","loRemainingMl","loBottleValue","loDirectMargin","loConsignMargin","loConsignFee","loDelivery"].forEach(id=>{
+  const el=$(id);
+  if(el){
+    el.addEventListener("input",()=>{
+      if(id==="loRemainingMl"){
+        const val=Number(el.value);
+        document.querySelectorAll("#loQuickSizes button").forEach(b=>b.classList.toggle("active",Number(b.dataset.size)===val));
+      }
+      calculateLeftover();
+    });
+  }
+});
+if($("loSaleMode")) $("loSaleMode").addEventListener("change",calculateLeftover);
+if($("loIncludeDeli")) $("loIncludeDeli").addEventListener("change",calculateLeftover);
+if($("loRoundTo")) $("loRoundTo").addEventListener("change",calculateLeftover);
+if($("leftoverPerfumeSearch")) $("leftoverPerfumeSearch").addEventListener("input",renderLeftoverPicker);
+if($("loadLeftoverSelectedBtn")) $("loadLeftoverSelectedBtn").addEventListener("click",()=>{
+  const val=$("leftoverPerfumeSelect")?.value;
+  if(!val) return;
+  const p=getPerfumeCatalog().find(x=>String(x.name||"").trim().toLowerCase()===val);
+  if(p) applyPerfumeToLeftover(p);
+});
+document.querySelectorAll("#loQuickSizes button").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    $("loRemainingMl").value=btn.dataset.size;
+    document.querySelectorAll("#loQuickSizes button").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    calculateLeftover();
+  });
+});
+if($("loResetBtn")) $("loResetBtn").addEventListener("click",()=>{
+  $("loRemainingMl").value="35";
+  $("loBottleValue").value="0";
+  $("loSaleMode").value="direct";
+  $("loDirectMargin").value="15";
+  $("loConsignMargin").value="25";
+  $("loConsignFee").value="15";
+  $("loIncludeDeli").checked=true;
+  $("loDelivery").value="5000";
+  $("loRoundTo").value="1000";
+  document.querySelectorAll("#loQuickSizes button").forEach(b=>b.classList.toggle("active",b.dataset.size==="35"));
+  calculateLeftover();
+});
+if($("loCopyBtn")) $("loCopyBtn").addEventListener("click",async()=>{
+  const r=calculateLeftover();
+  if(!r) return;
+  const lines=[
+    `${r.name}`,
+    `ပုလင်းလက်ကျန်ဖြတ် (Partial Bottle)`,
+    `• လက်ကျန်ပမာဏ: ${r.remainingMl}ml (Original ${r.bottleMl}ml Bottle)`,
+    r.bottleValue>0 ? `• မူရင်းပုလင်းခွံ/ဘူး: ပါဝင် (${ks(r.bottleValue)})` : `• မူရင်းပုလင်းပါဝင် (Liquid သီးသန့်တွက်)`,
+    `• Direct ရောင်းဈေး: ${ks(r.cur.directRecommended)}${r.deliAmount>0?' (Delivery အပါ)':' (Deli မပါ)'}`,
+    `• Consignment တင်ဈေး: ${ks(r.cur.consignRecommended)}`,
+    `• အခြေအနေ: အနံ့စစ် Authentic Original Juice`
+  ];
+  const text=lines.join("\n");
+  try{
+    await navigator.clipboard.writeText(text);
+    $("loCopyBtn").textContent="Copied";
+    setTimeout(()=>$("loCopyBtn").textContent="Copy Leftover Summary",1200);
+  }catch{ alert(text); }
+});
+
 // ---------------- Bundle Set (5 perfumes, same ml) ----------------
 const BUNDLE_COUNT=5;
 const BUNDLE_DELIVERY=5000;
@@ -1221,7 +1598,7 @@ function renderBundlePickers(){
     const q=String(search?.value||"").trim().toLowerCase();
     let list=catalog;
     if(q) list=catalog.filter(x=>String(x.name||"").toLowerCase().includes(q));
-    sel.innerHTML='<option value="">— Perfume ရွေးပါ —</option'+list.map(x=>{
+    sel.innerHTML='<option value="">— Perfume ရွေးပါ —</option>'+list.map(x=>{
       const name=String(x.name||"");
       const key=name.trim().toLowerCase();
       return `<option value="${escapeHtml(key)}">${escapeHtml(name)} — ${Number(x.fullPrice||0).toLocaleString()} Ks</option>`;
@@ -1437,6 +1814,7 @@ function loadItem(i){
   $("pricingModule").classList.remove("hidden");
   $("creditModule").classList.add("hidden");
   if($("bundleModule")) $("bundleModule").classList.add("hidden");
+  if($("leftoverModule")) $("leftoverModule").classList.add("hidden");
   if($("adminModule")) $("adminModule").classList.add("hidden");
   document.querySelectorAll(".seg").forEach(b=>b.classList.toggle("active",b.dataset.mode===mode));
   updateModeUI();
@@ -1550,64 +1928,6 @@ if(savedPerfumeSearch){
   });
 }
 
-// Bundle controls
-document.querySelectorAll(".bundle-search").forEach(el=>el.addEventListener("input",renderBundlePickers));
-document.querySelectorAll(".bundle-perfume").forEach(el=>el.addEventListener("change",calculateBundle));
-if($("bundleSize")) $("bundleSize").addEventListener("change",()=>{
-  const custom=$("bundleSize").value==="custom";
-  $("bundleCustomSizeWrap").classList.toggle("hidden",!custom);
-  syncBundleBottleCost();
-  calculateBundle();
-});
-if($("bundleCustomSize")) $("bundleCustomSize").addEventListener("input",()=>{
-  syncBundleBottleCost();
-  calculateBundle();
-});
-if($("bundleMargin")) $("bundleMargin").addEventListener("change",()=>{
-  const custom=$("bundleMargin").value==="custom";
-  $("bundleCustomMarginWrap").classList.toggle("hidden",!custom);
-  calculateBundle();
-});
-if($("bundleCustomMargin")) $("bundleCustomMargin").addEventListener("input",calculateBundle);
-if($("bundleRoundTo")) $("bundleRoundTo").addEventListener("change",()=>{
-  const custom=$("bundleRoundTo").value==="custom";
-  $("bundleCustomRoundWrap").classList.toggle("hidden",!custom);
-  calculateBundle();
-});
-if($("bundleCustomRoundTo")) $("bundleCustomRoundTo").addEventListener("input",calculateBundle);
-if($("bundleBottleCost")) $("bundleBottleCost").addEventListener("input",e=>{
-  const ml=bundleSelectedMl(), cost=bundleBottleCostValue();
-  if(e.isTrusted && ml>0 && cost!==null){
-    saveBottleCost(ml,cost);
-    $("bundleBottleCost").dataset.size=String(ml);
-  }
-  calculateBundle();
-});
-if($("bundleResetBtn")) $("bundleResetBtn").addEventListener("click",resetBundle);
-if($("bundleCopyBtn")) $("bundleCopyBtn").addEventListener("click",async()=>{
-  const r=calculateBundle();
-  if(!r){ return; }
-  const lines=[
-    "Bundle Set",
-    `${r.rows.length} perfumes × ${r.ml}ml`,
-    ...r.rows.map((x,i)=>`${i+1}. ${x.p.name} — Liquid ${ks(x.liquid)}`),
-    `Liquid Total: ${ks(r.liquidTotal)}`,
-    `Delivery: ${ks(r.delivery)}`,
-    `Bottle/Pack: ${ks(r.bottleCost)} × 5 = ${ks(r.bottlesTotal)}`,
-    `Base Cost: ${ks(r.baseCost)}`,
-    `Margin: ${r.margin}% = ${ks(r.profit)}`,
-    `Before Round: ${ks(r.selling)}`,
-    `Round Up To: ${ks(r.roundStep)}`,
-    `Bundle Rounded Price: ${ks(r.roundedSelling)}`
-  ];
-  const text=lines.join("\n");
-  try{
-    await navigator.clipboard.writeText(text);
-    $("bundleCopyBtn").textContent="Copied";
-    setTimeout(()=>$("bundleCopyBtn").textContent="Copy Bundle Summary",1200);
-  }catch{ alert(text); }
-});
-
 $("loadSelectedBtn").addEventListener("click",()=>{
   const raw=$("savedPerfumeSelect").value;
   if(raw==="") return;
@@ -1618,7 +1938,7 @@ $("loadSelectedBtn").addEventListener("click",()=>{
 if($("clearSaved")) $("clearSaved").addEventListener("click",()=>window.open(SHEET_EDIT_URL,"_blank","noopener"));
 
 function exportBackup(){
-  const payload={app:"Perfume Calculator",version:30.8,exportedAt:new Date().toISOString(),savedPerfumes:getSaved(),creditSales:typeof getCredits==="function"?getCredits():[]};
+  const payload={app:"Perfume Calculator",version:30.9,exportedAt:new Date().toISOString(),savedPerfumes:getSaved(),creditSales:typeof getCredits==="function"?getCredits():[]};
   const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
   const url=URL.createObjectURL(blob), a=document.createElement("a");
   a.href=url; a.download=`perfume-calculator-backup-${todayLocal()}.json`; document.body.appendChild(a); a.click(); a.remove();
@@ -1875,7 +2195,6 @@ async function applyBulkCategorySave(){
 
       await postAppsScript(payload);
 
-      // Update local state immediately so UI reflects the change right away
       const idx=livePerfumes.findIndex(v=>String(v.name||"").trim().toLowerCase()===String(u.name||"").trim().toLowerCase());
       if(idx>=0) livePerfumes[idx]={...livePerfumes[idx],...u,mode:baseMode,category};
       const savedAll=readSavedKey(SAVED_KEY);
@@ -1891,9 +2210,11 @@ async function applyBulkCategorySave(){
     renderSaved();
     renderSavedPicker();
     renderAdminPicker();
-    renderBundlePickers();
     renderBulkCategoryUI();
+    renderBundlePickers();
+    renderLeftoverPicker();
     calculate();
+    calculateLeftover();
 
     setBulkMsg(`✅ ${catChoice} Category မှ Perfume (${updatedItems.length}) မျိုးလုံး LIVE Save အောင်မြင်ပါပြီ။`,"success");
     scheduleAdminVerify();
@@ -2147,9 +2468,11 @@ function finishAdminSuccess(message,{name=""}={}){
 
   renderAdminPicker();
   renderBulkCategoryUI();
+  renderLeftoverPicker();
   renderSaved();
   renderSavedPicker();
   updateAdminLiveBadge();
+  updateLeftoverLiveBadge();
 }
 async function checkAdminPending(){
   if(!adminPendingWrite) return;
@@ -2200,7 +2523,9 @@ async function checkAdminPending(){
       setAdminMsg(`✅ ${name} Delete အောင်မြင်ပြီ။`,"success");
       renderAdminPicker();
       renderBulkCategoryUI();
+      renderLeftoverPicker();
       updateAdminLiveBadge();
+      updateLeftoverLiveBadge();
     }
   }
 }
@@ -2366,6 +2691,9 @@ function processLiveSheetResponse(resp){
     renderAdminPicker();
     renderBulkCategoryUI();
     renderBundlePickers();
+    renderLeftoverPicker();
+    calculateLeftover();
+    updateLeftoverLiveBadge();
     updateAdminLiveBadge();
     updateBundleLiveBadge();
     checkAdminPending();
@@ -2380,6 +2708,7 @@ function processLiveSheetResponse(resp){
   }catch(e){
     if(!liveSheetReady) setLiveSheetStatus("Google Sheet data မရသေးပါ • offline fallback data သုံးနေပါတယ်",false);
     updateAdminLiveBadge();
+    updateLeftoverLiveBadge();
     return false;
   }
 }
@@ -2392,6 +2721,7 @@ function refreshLiveSheet(force=false){
   if(navigator.onLine===false){
     if(!liveSheetReady) setLiveSheetStatus("OFFLINE • fallback data သုံးနေပါတယ်",false);
     updateAdminLiveBadge();
+    updateLeftoverLiveBadge();
     return;
   }
   if(liveRefreshInFlight && !force) return;
@@ -2419,6 +2749,7 @@ function refreshLiveSheet(force=false){
     cleanup();
     if(!liveSheetReady) setLiveSheetStatus("Google Sheet connection မရသေးပါ • fallback data သုံးနေပါတယ်",false);
     updateAdminLiveBadge();
+    updateLeftoverLiveBadge();
   };
   document.head.appendChild(script);
   setTimeout(()=>{
@@ -2426,6 +2757,7 @@ function refreshLiveSheet(force=false){
       cleanup();
       if(!liveSheetReady) setLiveSheetStatus("LIVE connection timeout • fallback data သုံးနေပါတယ်",false);
       updateAdminLiveBadge();
+      updateLeftoverLiveBadge();
     }
   },12000);
 }
@@ -2455,8 +2787,8 @@ migrateLegacySaved();
 })();
 refreshLiveSheet();
 setInterval(()=>refreshLiveSheet(false),3000);
-window.addEventListener("online",()=>{setLiveSheetStatus("Internet ပြန်ရပြီ • LIVE sync လုပ်နေပါတယ်…",false);updateBundleLiveBadge();refreshLiveSheet(true);});
-window.addEventListener("offline",()=>{setLiveSheetStatus("OFFLINE • fallback data သုံးနေပါတယ်",false);updateAdminLiveBadge();updateBundleLiveBadge();});
+window.addEventListener("online",()=>{setLiveSheetStatus("Internet ပြန်ရပြီ • LIVE sync လုပ်နေပါတယ်…",false);updateBundleLiveBadge();updateLeftoverLiveBadge();refreshLiveSheet(true);});
+window.addEventListener("offline",()=>{setLiveSheetStatus("OFFLINE • fallback data သုံးနေပါတယ်",false);updateAdminLiveBadge();updateBundleLiveBadge();updateLeftoverLiveBadge();});
 document.addEventListener("visibilitychange",()=>{if(!document.hidden) refreshLiveSheet(true);});
 $("copyBtn").addEventListener("click",async()=>{
   const r=calculate(); let text=`Perfume Calculator\n${$("name").value.trim()||"Perfume"}\n`;
@@ -2468,7 +2800,27 @@ $("copyBtn").addEventListener("click",async()=>{
 window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferredPrompt=e;$("installBtn").classList.remove("hidden");});
 $("installBtn").addEventListener("click",async()=>{if(!deferredPrompt)return;deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;$("installBtn").classList.add("hidden");});
 
-$("pricingModule").classList.remove("hidden"); $("creditModule").classList.add("hidden"); if($("bundleModule")) $("bundleModule").classList.add("hidden"); if($("adminModule")) $("adminModule").classList.add("hidden"); updateModeUI();calculate();renderSaved();renderSavedPicker();renderAdminPicker();renderBulkCategoryUI();renderBundlePickers();syncBundleBottleCost();calculateBundle();updateAdminLiveBadge();updateBundleLiveBadge();
+$("pricingModule").classList.remove("hidden");
+$("creditModule").classList.add("hidden");
+if($("bundleModule")) $("bundleModule").classList.add("hidden");
+if($("leftoverModule")) $("leftoverModule").classList.add("hidden");
+if($("adminModule")) $("adminModule").classList.add("hidden");
+
+updateModeUI();
+calculate();
+renderSaved();
+renderSavedPicker();
+renderAdminPicker();
+renderBulkCategoryUI();
+renderBundlePickers();
+renderLeftoverPicker();
+calculateLeftover();
+updateLeftoverLiveBadge();
+syncBundleBottleCost();
+calculateBundle();
+updateAdminLiveBadge();
+updateBundleLiveBadge();
+
 window.loadItem=loadItem;window.deleteItem=deleteItem;
 window.getSavedPerfumes=getSaved;
 
