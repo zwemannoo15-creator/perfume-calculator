@@ -7,7 +7,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
-  <!-- V30.9.1 LEFTOVER DEFAULT MARGIN: hardened single-file build -->
+  <!-- V30.9.2 LEFTOVER CUSTOM DEFAULT MARGIN: hardened single-file build -->
   <title>Perfume Calculator • LIVE</title>
   <style>
 *{box-sizing:border-box}
@@ -380,7 +380,7 @@ body{min-height:100vh;min-height:100dvh}button,input{font:inherit}button{cursor:
           </select>
         </label>
 
-        <!-- ENHANCED: Leftover Direct Margin with Default & Presets -->
+        <!-- ENHANCED: Leftover Direct Margin with Custom Default & Lock Option -->
         <label>
           <span>Direct Margin (%) — Default သတ်မှတ်နိုင်</span>
           <div style="display:flex;gap:6px;align-items:center">
@@ -391,10 +391,16 @@ body{min-height:100vh;min-height:100dvh}button,input{font:inherit}button{cursor:
               <option value="20">20%</option>
               <option value="25">25%</option>
               <option value="30">30%</option>
-              <option value="custom">Custom</option>
+              <option value="custom" id="loCustomPresetOpt">Custom</option>
             </select>
+            <button id="loSaveDefaultBtn" class="secondary" type="button" style="white-space:nowrap;padding:10px 10px;font-size:12px" title="ဒီတန်ဖိုးကို Default အဖြစ် အမြဲမှတ်ထားမည်">★ Save Default</button>
           </div>
-          <small style="color:var(--muted);font-size:11px">နောက်ဆုံးသုံးထားသော Margin ကို ဒီ device တွင် အလိုအလျောက် Default မှတ်ထားပေးသည်</small>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:3px;flex-wrap:wrap;gap:4px">
+            <label style="flex-direction:row;align-items:center;gap:5px;font-size:11px;color:var(--muted);margin:0;cursor:pointer">
+              <input type="checkbox" id="loLockCustomDefault" style="width:14px;height:14px;accent-color:#111827" /> Perfume Load လုပ်ရင်လည်း ဒီ Custom Default အတိုင်းပဲ သုံးမည်
+            </label>
+            <span id="loDefaultSavedMsg" style="font-size:11px;color:#047857;font-weight:700"></span>
+          </div>
         </label>
 
         <label>
@@ -865,7 +871,7 @@ body{min-height:100vh;min-height:100dvh}button,input{font:inherit}button{cursor:
       <div id="creditList" class="credit-list"></div>
     </section>
 
-    <footer><p>Perfume Calculator V30.9.1 • ပုလင်းလက်ကျန်ဖြတ် Default Margin • LIVE Sheet • Single-file</p></footer>
+    <footer><p>Perfume Calculator V30.9.2 • ပုလင်းလက်ကျန်ဖြတ် Default Margin • LIVE Sheet • Single-file</p></footer>
   </main>
 
   <script>
@@ -1324,6 +1330,7 @@ function getPerfumeCatalog(){
 
 // ---------------- Leftover Bottle Module (ပုလင်းလက်ကျန်ဖြတ်) ----------------
 const LEFTOVER_DIRECT_MARGIN_KEY = "perfumeLoDirectMarginDefaultV1";
+const LEFTOVER_LOCK_DEFAULT_KEY = "perfumeLoLockDefaultV1";
 
 function leftoverDirectMarginDefault(){
   let v = 15;
@@ -1338,13 +1345,24 @@ function rememberLeftoverDirectMargin(val){
   const v = Number(val);
   if(Number.isFinite(v) && v >= 0){
     try { localStorage.setItem(LEFTOVER_DIRECT_MARGIN_KEY, String(v)); }catch{}
+    updateCustomPresetLabel(v);
   }
+}
+
+function updateCustomPresetLabel(v){
+  const opt = $("loCustomPresetOpt");
+  if(opt) opt.textContent = `Custom (${v}%)`;
 }
 
 function restoreLeftoverDefaultMargin(){
   const def = leftoverDirectMarginDefault();
   if($("loDirectMargin")) $("loDirectMargin").value = String(def);
+  updateCustomPresetLabel(def);
   syncLeftoverPreset(def);
+  try {
+    const locked = localStorage.getItem(LEFTOVER_LOCK_DEFAULT_KEY) === "1";
+    if($("loLockCustomDefault")) $("loLockCustomDefault").checked = locked;
+  }catch{}
 }
 
 function syncLeftoverPreset(val){
@@ -1394,15 +1412,15 @@ function applyPerfumeToLeftover(p){
   if($("loFullPrice")) $("loFullPrice").value=Number(p.fullPrice||0);
   if($("loBottleMl")) $("loBottleMl").value=Number(p.bottleMl||100);
 
-  // Smart Default for Direct Margin:
-  // 1. If perfume has saved directMarkup, use it.
-  // 2. If UAE category, default to 30%.
-  // 3. Otherwise use the remembered Leftover Direct Margin default.
+  const isLocked = $("loLockCustomDefault")?.checked ?? (localStorage.getItem(LEFTOVER_LOCK_DEFAULT_KEY) === "1");
   let targetDirect = leftoverDirectMarginDefault();
-  if(p.directMarkup !== undefined && Number(p.directMarkup) > 0){
-    targetDirect = Number(p.directMarkup);
-  } else if(String(p.category||"").toUpperCase() === "UAE"){
-    targetDirect = 30;
+
+  if(!isLocked){
+    if(p.directMarkup !== undefined && Number(p.directMarkup) > 0){
+      targetDirect = Number(p.directMarkup);
+    } else if(String(p.category||"").toUpperCase() === "UAE"){
+      targetDirect = 30;
+    }
   }
   if($("loDirectMargin")) $("loDirectMargin").value = String(targetDirect);
   syncLeftoverPreset(targetDirect);
@@ -1543,6 +1561,29 @@ if($("loDirectMarginPreset")){
       rememberLeftoverDirectMargin(v);
       calculateLeftover();
     }
+  });
+}
+
+if($("loSaveDefaultBtn")){
+  $("loSaveDefaultBtn").addEventListener("click", ()=>{
+    const v = Number($("loDirectMargin")?.value);
+    if(Number.isFinite(v) && v >= 0){
+      rememberLeftoverDirectMargin(v);
+      syncLeftoverPreset(v);
+      const msg = $("loDefaultSavedMsg");
+      if(msg){
+        msg.textContent = `✅ ${v}% ကို Default အဖြစ် သိမ်းပြီးပါပြီ`;
+        setTimeout(()=>{ if(msg && msg.textContent.includes(String(v))) msg.textContent = ""; }, 2500);
+      }
+    }
+  });
+}
+
+if($("loLockCustomDefault")){
+  $("loLockCustomDefault").addEventListener("change", (e)=>{
+    try {
+      localStorage.setItem(LEFTOVER_LOCK_DEFAULT_KEY, e.target.checked ? "1" : "0");
+    }catch{}
   });
 }
 
