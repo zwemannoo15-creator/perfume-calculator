@@ -3400,6 +3400,629 @@ if (creditRecoveryResult.total > 0) {
 }
 window.setCreditPaid = setCreditPaid;
 window.deleteCredit = deleteCredit;
+// ==========================================
+// CATEGORY AUTO DEFAULT MARGIN - V32
+// ==========================================
+
+(() => {
+  const RULE_KEY = "perfumeCategoryMarginRulesV1";
+  const MANUAL_KEY = "perfumeCategoryManualMarginsV1";
+
+  // မူလ Default Margin သတ်မှတ်ချက်များ
+  const DEFAULT_RULES = {
+    uaeLimit: 150000,
+    uaeLowDirect: 30,
+    uaeHighDirect: 25,
+    uaeLowFull: 25,
+    uaeHighFull: 25,
+
+    designerLimit: 200000,
+    designerLowDirect: 30,
+    designerHighDirect: 25,
+    designerLowFull: 20,
+    designerHighFull: 20,
+
+    nicheDirect: 25,
+    nicheFull: 20
+  };
+
+  function readStorage(key) {
+    try {
+      return JSON.parse(
+        localStorage.getItem(key) || "{}"
+      ) || {};
+    } catch {
+      return {};
+    }
+  }
+
+  function readRules() {
+    return {
+      ...DEFAULT_RULES,
+      ...readStorage(RULE_KEY)
+    };
+  }
+
+  // Category နှင့် အရင်းဈေးအလိုက် Margin တွက်ရန်
+  function getDefaultMargins(category, fullPrice) {
+    const rules = readRules();
+
+    category = String(category || "")
+      .trim()
+      .toUpperCase();
+
+    fullPrice = Number(fullPrice);
+
+    if (category === "UAE") {
+      return fullPrice <= rules.uaeLimit
+        ? {
+            direct: rules.uaeLowDirect,
+            full: rules.uaeLowFull
+          }
+        : {
+            direct: rules.uaeHighDirect,
+            full: rules.uaeHighFull
+          };
+    }
+
+    if (category === "DESIGNER") {
+      return fullPrice <= rules.designerLimit
+        ? {
+            direct: rules.designerLowDirect,
+            full: rules.designerLowFull
+          }
+        : {
+            direct: rules.designerHighDirect,
+            full: rules.designerHighFull
+          };
+    }
+
+    if (category === "NICHE") {
+      return {
+        direct: rules.nicheDirect,
+        full: rules.nicheFull
+      };
+    }
+
+    return null;
+  }
+
+  // Manual Override မှတ်ထားရန်
+  function perfumeKey(name) {
+    return "perfume:" + String(name || "")
+      .trim()
+      .toLowerCase();
+  }
+
+  function getManualFlags(name) {
+    const saved =
+      readStorage(MANUAL_KEY)[perfumeKey(name)] || {};
+
+    return {
+      direct: saved.direct === true,
+      full: saved.full === true
+    };
+  }
+
+  function saveManualFlags(name, flags, oldName = "") {
+    const data = readStorage(MANUAL_KEY);
+
+    if (oldName) {
+      delete data[perfumeKey(oldName)];
+    }
+
+    data[perfumeKey(name)] = flags;
+
+    localStorage.setItem(
+      MANUAL_KEY,
+      JSON.stringify(data)
+    );
+  }
+
+  // ==========================================
+  // PRICING CALCULATOR CATEGORY
+  // ==========================================
+
+  $("fullPrice").closest("label").insertAdjacentHTML(
+    "afterend",
+    `
+    <label>
+      <span>Category (Auto Margin)</span>
+      <select id="pricingCategory">
+        <option value="">Select Category</option>
+        <option value="UAE">UAE</option>
+        <option value="DESIGNER">DESIGNER</option>
+        <option value="NICHE">NICHE</option>
+      </select>
+    </label>
+    `
+  );
+
+  let pricingManual = {
+    direct: false,
+    full: false
+  };
+
+  function applyPricingDefaults() {
+    const defaults = getDefaultMargins(
+      $("pricingCategory").value,
+      n("fullPrice")
+    );
+
+    if (!defaults) return;
+
+    if (!pricingManual.direct) {
+      $("directMarkup").value = defaults.direct;
+    }
+
+    if (!pricingManual.full) {
+      $("fullSizeMarginInput").value = defaults.full;
+    }
+  }
+
+  function loadPricingDefaults(item) {
+    if (!item) return;
+
+    $("pricingCategory").value =
+      String(item.category || "").toUpperCase();
+
+    pricingManual = getManualFlags(item.name);
+
+    $("directMarkup").value =
+      Number(item.directMarkup ?? 15);
+
+    $("fullSizeMarginInput").value =
+      Number(item.fullSizeMarkup ?? 15);
+
+    applyPricingDefaults();
+    calculate();
+  }
+
+  const originalLoadItem = loadItem;
+
+  loadItem = function(index) {
+    const item = getSaved()[index];
+
+    originalLoadItem(index);
+
+    if (item) {
+      loadPricingDefaults(item);
+    }
+  };
+
+  const originalRemotePricing =
+    applyRemotePerfumeToPricing;
+
+  applyRemotePerfumeToPricing = function(item, options) {
+    const result =
+      originalRemotePricing(item, options);
+
+    if (result) {
+      loadPricingDefaults(item);
+    }
+
+    return result;
+  };
+
+  $("pricingCategory").addEventListener("change", () => {
+    pricingManual = {
+      direct: false,
+      full: false
+    };
+
+    applyPricingDefaults();
+    markPricingDirty();
+    calculate();
+  });
+
+  $("fullPrice").addEventListener("input", () => {
+    applyPricingDefaults();
+    calculate();
+  }, true);
+
+  $("directMarkup").addEventListener("input", () => {
+    pricingManual.direct = true;
+  }, true);
+
+  $("fullSizeMarginInput").addEventListener("input", () => {
+    pricingManual.full = true;
+  }, true);
+
+  // Auto Default ပြန်သုံးရန် Button
+
+  [
+    ["directMarkup", "direct"],
+    ["fullSizeMarginInput", "full"]
+  ].forEach(([id, key]) => {
+
+    const button = document.createElement("button");
+
+    button.type = "button";
+    button.className = "secondary";
+    button.textContent = "Use Auto Default";
+
+    $(id).insertAdjacentElement("afterend", button);
+
+    button.addEventListener("click", () => {
+      pricingManual[key] = false;
+
+      applyPricingDefaults();
+      markPricingDirty();
+      calculate();
+    });
+  });
+
+  // ==========================================
+  // ADMIN AUTO / MANUAL MARGIN
+  // ==========================================
+
+  $("adminDirectMarkupField")
+    .classList.remove("admin-direct-field", "hidden");
+
+  $("adminFullSizeMarkupField")
+    .classList.remove("admin-fullsize-field", "hidden");
+
+  $("adminDirectMarkup").insertAdjacentHTML(
+    "afterend",
+    `
+    <span>
+      <input type="checkbox"
+        id="adminDirectAuto" checked>
+      Auto Default Margin
+    </span>
+    `
+  );
+
+  $("adminFullSizeMarkup").insertAdjacentHTML(
+    "afterend",
+    `
+    <span>
+      <input type="checkbox"
+        id="adminFullAuto" checked>
+      Auto Default Margin
+    </span>
+    `
+  );
+
+  const originalCategoryMargin = applyCategoryMargin;
+
+  applyCategoryMargin = function(options = {}) {
+
+    // Consignment စနစ်ကို မူလအတိုင်းထားမည်
+    originalCategoryMargin({
+      isNew:
+        options.isNew &&
+        $("adminMode").value === "consignment"
+    });
+
+    const defaults = getDefaultMargins(
+      $("adminCategory").value,
+      n("adminFullPrice")
+    );
+
+    const directAuto = $("adminDirectAuto").checked;
+    const fullAuto = $("adminFullAuto").checked;
+
+    $("adminDirectMarkup").readOnly =
+      Boolean(defaults && directAuto);
+
+    $("adminFullSizeMarkup").readOnly =
+      Boolean(defaults && fullAuto);
+
+    if (!defaults) return;
+
+    if (directAuto) {
+      $("adminDirectMarkup").value =
+        defaults.direct;
+    }
+
+    if (fullAuto) {
+      $("adminFullSizeMarkup").value =
+        defaults.full;
+    }
+
+    $("adminDirectMarginHint").textContent =
+      "Auto Default: " + defaults.direct + "%";
+  };
+
+  const originalAdminFill = adminFill;
+
+  adminFill = function(item, options = {}) {
+    if (!item) return;
+
+    const flags = options.existing
+      ? getManualFlags(item.name)
+      : { direct: false, full: false };
+
+    $("adminDirectAuto").checked = !flags.direct;
+    $("adminFullAuto").checked = !flags.full;
+
+    originalAdminFill(item, options);
+
+    applyCategoryMargin();
+  };
+
+  [
+    "adminCategory",
+    "adminFullPrice",
+    "adminDirectAuto",
+    "adminFullAuto"
+  ].forEach(id => {
+    $(id).addEventListener("input", () => {
+      applyCategoryMargin();
+    });
+
+    $(id).addEventListener("change", () => {
+      applyCategoryMargin();
+    });
+  });
+
+  // Admin Save မလုပ်ခင် Default Margin တွက်မည်
+
+  const pendingFlags = new WeakMap();
+  const originalAdminPayload = adminPayload;
+
+  adminPayload = function() {
+    applyCategoryMargin();
+
+    const payload = originalAdminPayload();
+
+    pendingFlags.set(payload, {
+      direct: !$("adminDirectAuto").checked,
+      full: !$("adminFullAuto").checked
+    });
+
+    return payload;
+  };
+
+  // LIVE Save အောင်မြင်မှ Manual Setting မှတ်မည်
+
+  const originalAdminSuccess = finishAdminSuccess;
+
+  finishAdminSuccess = function(message, options = {}) {
+    const payload = adminPendingWrite?.payload;
+
+    if (payload && pendingFlags.has(payload)) {
+      try {
+        saveManualFlags(
+          payload.name,
+          pendingFlags.get(payload),
+          payload.originalName
+        );
+      } catch {}
+    }
+
+    return originalAdminSuccess(message, options);
+  };
+
+  // ==========================================
+  // BULK CATEGORY UPDATE AUTO MARGIN
+  // ==========================================
+
+  const originalBulkUpdate = computeBulkUpdatedItem;
+
+  computeBulkUpdatedItem = function(item) {
+    const updated = originalBulkUpdate(item);
+
+    const defaults = getDefaultMargins(
+      updated.category,
+      updated.fullPrice
+    );
+
+    const manual = getManualFlags(item.name);
+
+    const directInput =
+      $("bulkDirectMarkup").value.trim();
+
+    const fullInput =
+      $("bulkFullSizeMarkup").value.trim();
+
+    if (defaults) {
+
+      if (directInput === "" && !manual.direct) {
+        updated.directMarkup = defaults.direct;
+      }
+
+      if (fullInput === "" && !manual.full) {
+        updated.fullSizeMarkup = defaults.full;
+      }
+    }
+
+    return updated;
+  };
+
+  // Bulk တွင် Manual Margin ရိုက်ထားပါက မှတ်ရန်
+
+  const originalPostAppsScript = postAppsScript;
+
+  postAppsScript = async function(payload) {
+
+    const isBulkSave =
+      payload.action === "save" &&
+      !adminPendingWrite;
+
+    const flags = getManualFlags(payload.name);
+
+    if (isBulkSave) {
+
+      if ($("bulkDirectMarkup").value.trim() !== "") {
+        flags.direct = true;
+      }
+
+      if ($("bulkFullSizeMarkup").value.trim() !== "") {
+        flags.full = true;
+      }
+    }
+
+    const result = await originalPostAppsScript(payload);
+
+    if (isBulkSave) {
+      try {
+        saveManualFlags(payload.name, flags);
+      } catch {}
+    }
+
+    return result;
+  };
+
+  // ==========================================
+  // ADMIN DEFAULT MARGIN SETTING UI
+  // ==========================================
+
+  const settingBox = document.createElement("div");
+
+  settingBox.className = "bottle-default-box";
+
+  settingBox.innerHTML = `
+    <h3 style="margin:0 0 10px">
+      Default Margin Setting
+    </h3>
+
+    <p style="font-size:12px;color:#6b7280">
+      Category အလိုက် Default Margin များ ပြင်ဆင်ရန်
+    </p>
+
+    <div id="autoMarginRuleGrid"></div>
+
+    <div class="admin-editor-actions">
+      <button type="button"
+        id="resetAutoMarginRules"
+        class="secondary">
+        Reset Defaults
+      </button>
+
+      <button type="button"
+        id="saveAutoMarginRules"
+        class="primary-btn">
+        Save Defaults
+      </button>
+    </div>
+
+    <p id="autoMarginMessage"
+       class="admin-msg"></p>
+  `;
+
+  $("adminBottleDefaultGrid")
+    .closest(".bottle-default-box")
+    .insertAdjacentElement("afterend", settingBox);
+
+  function renderMarginSettings() {
+    const rules = readRules();
+
+    const field = (key, label) => `
+      <label>
+        <span>${label}</span>
+        <input type="number"
+          data-auto-margin="${key}"
+          min="0"
+          ${key.endsWith("Limit")
+            ? 'step="1"'
+            : 'max="100" step="0.5"'}
+          value="${rules[key]}">
+      </label>
+    `;
+
+    $("autoMarginRuleGrid").innerHTML = `
+
+      <h3>UAE</h3>
+
+      <div class="grid">
+        ${field("uaeLimit", "Cost Limit (Ks)")}
+        ${field("uaeLowDirect", "Below / Equal Direct %")}
+        ${field("uaeLowFull", "Below / Equal Full Size %")}
+        ${field("uaeHighDirect", "Above Direct %")}
+        ${field("uaeHighFull", "Above Full Size %")}
+      </div>
+
+      <h3>DESIGNER</h3>
+
+      <div class="grid">
+        ${field("designerLimit", "Cost Limit (Ks)")}
+        ${field("designerLowDirect", "Below / Equal Direct %")}
+        ${field("designerLowFull", "Below / Equal Full Size %")}
+        ${field("designerHighDirect", "Above Direct %")}
+        ${field("designerHighFull", "Above Full Size %")}
+      </div>
+
+      <h3>NICHE</h3>
+
+      <div class="grid">
+        ${field("nicheDirect", "Direct Margin %")}
+        ${field("nicheFull", "Full Size Margin %")}
+      </div>
+    `;
+  }
+
+  $("saveAutoMarginRules").addEventListener("click", () => {
+
+    const rules = {};
+
+    const fields = document.querySelectorAll(
+      "[data-auto-margin]"
+    );
+
+    for (const input of fields) {
+
+      if (
+        input.value.trim() === "" ||
+        !input.checkValidity()
+      ) {
+        alert("Margin / Cost တန်ဖိုး ပြန်စစ်ပါ။");
+        input.focus();
+        return;
+      }
+
+      rules[input.dataset.autoMargin] =
+        Number(input.value);
+    }
+
+    try {
+      localStorage.setItem(
+        RULE_KEY,
+        JSON.stringify(rules)
+      );
+    } catch {
+      alert("Browser Storage တွင် သိမ်း၍မရပါ။");
+      return;
+    }
+
+    applyPricingDefaults();
+    applyCategoryMargin();
+    renderBulkCategoryUI();
+    calculate();
+
+    $("autoMarginMessage").textContent =
+      "Default Margin Settings သိမ်းပြီးပါပြီ။";
+  });
+
+  $("resetAutoMarginRules").addEventListener("click", () => {
+
+    if (!confirm("မူလ Default Margin ပြန်ထားမလား?")) {
+      return;
+    }
+
+    localStorage.removeItem(RULE_KEY);
+
+    renderMarginSettings();
+    applyPricingDefaults();
+    applyCategoryMargin();
+    renderBulkCategoryUI();
+    calculate();
+
+    $("autoMarginMessage").textContent =
+      "မူလ Default Margin ပြန်ထားပြီးပါပြီ။";
+  });
+
+  // INITIALIZE
+
+  renderMarginSettings();
+  applyCategoryMargin();
+  applyPricingDefaults();
+  renderBulkCategoryUI();
+  calculate();
+
+})();
+
 </script>
 </body>
 </html>
