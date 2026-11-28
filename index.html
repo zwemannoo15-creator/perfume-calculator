@@ -4527,5 +4527,595 @@ window.deleteCredit = deleteCredit;
 })();
   
 </script>
+<!-- POP-UP MARKET QR TEST SYSTEM -->
+
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+
+<script>
+(() => {
+
+  if (document.getElementById("marketQRPanel")) return;
+
+  // =========================================
+  // UNIQUE PERFUME CODE
+  // =========================================
+
+  function perfumeQRCode(name) {
+
+    const text = String(name || "")
+      .normalize("NFC")
+      .trim()
+      .toLowerCase();
+
+    let hash = 2166136261;
+
+    for (let i = 0; i < text.length; i++) {
+
+      hash ^= text.charCodeAt(i);
+      hash = Math.imul(hash, 16777619);
+
+    }
+
+    return "P-" + (hash >>> 0)
+      .toString(16)
+      .toUpperCase()
+      .padStart(8, "0");
+  }
+
+  function qrCatalog() {
+
+    return getPerfumeCatalog().map(p => ({
+      ...p,
+      qrCode: perfumeQRCode(p.name)
+    }));
+
+  }
+
+  // =========================================
+  // QR SYSTEM UI
+  // =========================================
+
+  const panel = document.createElement("section");
+
+  panel.id = "marketQRPanel";
+  panel.className = "card hidden";
+
+  panel.innerHTML = `
+
+    <h2>Pop-up Market QR</h2>
+
+    <p class="sub">
+      QR Sticker ထုတ်ရန် / Scan ဖတ်ရန်
+    </p>
+
+    <div style="display:grid;gap:10px;margin-top:15px">
+
+      <button id="printSampleQR"
+        class="secondary">
+        Print Test QR (5 Perfumes)
+      </button>
+
+      <button id="printAllQR"
+        class="secondary">
+        Print All Perfume QR
+      </button>
+
+      <button id="startMarketQR"
+        class="primary-btn">
+        📷 Scan Perfume QR
+      </button>
+
+      <button id="stopMarketQR"
+        class="secondary">
+        Stop Camera
+      </button>
+
+      <div id="marketQRReader"
+        style="width:100%;max-width:450px;margin:auto">
+      </div>
+
+      <label>
+        Manual QR Code
+
+        <input id="manualMarketQR"
+          type="text"
+          placeholder="P-XXXXXXXX"
+          autocomplete="off">
+      </label>
+
+      <button id="findMarketQR"
+        class="secondary">
+        Find Perfume
+      </button>
+
+      <div id="marketQRResult"
+        style="
+          background:#f3f4f6;
+          padding:16px;
+          border-radius:14px;
+          font-weight:bold;
+          white-space:pre-line;
+        ">
+        Scan ဖတ်ရန် အသင့်ရှိပါသည်။
+      </div>
+
+      <button id="loadMarketQRPerfume"
+        class="primary-btn hidden">
+        Open Direct Calculator
+      </button>
+
+    </div>
+  `;
+
+  document.querySelector(".module-card")
+    .insertAdjacentElement("afterend", panel);
+
+  const menuButton = document.createElement("button");
+
+  menuButton.type = "button";
+  menuButton.className = "primary-btn";
+  menuButton.textContent = "📷 Market QR System";
+  menuButton.style.width = "100%";
+  menuButton.style.marginTop = "10px";
+
+  document.querySelector(".module-card")
+    .appendChild(menuButton);
+
+  menuButton.addEventListener("click", () => {
+
+    panel.classList.toggle("hidden");
+
+    if (panel.classList.contains("hidden")) {
+      stopScanner().catch(showError);
+    }
+
+  });
+
+  // =========================================
+  // PRINT REAL QR STICKERS
+  // =========================================
+
+  function printPerfumeQR(limit) {
+
+    if (typeof QRCode === "undefined") {
+
+      alert("QR Library မရသေးပါ။ Internet စစ်ပါ။");
+      return;
+
+    }
+
+    const catalog = qrCatalog();
+
+    if (!catalog.length) {
+
+      alert("Perfume စာရင်းမရှိသေးပါ။");
+      return;
+
+    }
+
+    const codes = new Set(
+      catalog.map(p => p.qrCode)
+    );
+
+    if (codes.size !== catalog.length) {
+
+      alert("Duplicate QR Code တွေ့ရှိပါသည်။");
+      return;
+
+    }
+
+    const items = catalog
+      .sort((a, b) =>
+        String(a.name).localeCompare(String(b.name))
+      )
+      .slice(0, limit);
+
+    const win = window.open("", "_blank");
+
+    if (!win) {
+
+      alert("Browser မှာ Pop-up Allow လုပ်ပါ။");
+      return;
+
+    }
+
+    try {
+
+      let labels = "";
+
+      items.forEach(p => {
+
+        const holder = document.createElement("div");
+
+        new QRCode(holder, {
+          text: p.qrCode,
+          width: 300,
+          height: 300,
+          colorDark: "#000000",
+          colorLight: "#ffffff",
+          correctLevel: QRCode.CorrectLevel.M
+        });
+
+        const canvas = holder.querySelector("canvas");
+
+        if (!canvas) {
+          throw new Error("QR generation failed");
+        }
+
+        const src = canvas.toDataURL("image/png");
+
+        labels += `
+
+          <div class="label">
+
+            <div class="qr">
+              <img src="${src}">
+            </div>
+
+            <div class="name">
+              ${escapeHtml(p.name)}
+            </div>
+
+            <div class="code">
+              ${escapeHtml(p.qrCode)}
+            </div>
+
+          </div>
+
+        `;
+
+      });
+
+      win.document.write(`
+
+        <!DOCTYPE html>
+        <html>
+
+        <head>
+
+          <meta charset="UTF-8">
+
+          <title>Perfume QR Stickers</title>
+
+          <style>
+
+            @page {
+              size: A4 portrait;
+              margin: 8mm;
+            }
+
+            body {
+              font-family: Arial, sans-serif;
+              margin: 0;
+            }
+
+            .sheet {
+              display: grid;
+              grid-template-columns: repeat(4, 44mm);
+              gap: 3mm;
+            }
+
+            .label {
+              box-sizing: border-box;
+              width: 44mm;
+              padding: 2mm;
+              text-align: center;
+              border: 1px dashed #aaa;
+              break-inside: avoid;
+            }
+
+            .qr {
+              display: inline-block;
+              background: white;
+              padding: 5mm;
+            }
+
+            .qr img {
+              display: block;
+              width: 25mm;
+              height: 25mm;
+            }
+
+            .name {
+              font-size: 10px;
+              font-weight: bold;
+              overflow-wrap: anywhere;
+            }
+
+            .code {
+              font-size: 9px;
+              margin-top: 4px;
+            }
+
+            button {
+              padding: 12px 20px;
+              margin: 15px 0;
+              cursor: pointer;
+            }
+
+            @media print {
+
+              button {
+                display: none;
+              }
+
+            }
+
+          </style>
+
+        </head>
+
+        <body>
+
+          <button id="qrPrintButton">
+            Print / Save as PDF
+          </button>
+
+          <div class="sheet">
+            ${labels}
+          </div>
+
+        </body>
+
+        </html>
+
+      `);
+
+      win.document.close();
+
+      win.document
+        .getElementById("qrPrintButton")
+        .addEventListener("click", () => win.print());
+
+    } catch (error) {
+
+      win.close();
+      alert(error.message);
+
+    }
+
+  }
+
+  // =========================================
+  // QR SCANNER
+  // =========================================
+
+  let scanner = null;
+  let stopping = null;
+  let selectedPerfume = null;
+  let scanLocked = false;
+
+  function showError(error) {
+
+    $("marketQRResult").textContent =
+      error.message || String(error);
+
+  }
+
+  async function stopScanner() {
+
+    if (stopping) return stopping;
+    if (!scanner) return;
+
+    const current = scanner;
+
+    stopping = current.clear().then(() => {
+
+      if (scanner === current) scanner = null;
+
+    }).finally(() => {
+
+      stopping = null;
+
+    });
+
+    return stopping;
+
+  }
+
+  function findPerfumeByQR(text) {
+
+    const code = String(text || "")
+      .trim()
+      .toUpperCase();
+
+    const matches = qrCatalog()
+      .filter(p => p.qrCode === code);
+
+    selectedPerfume = null;
+
+    $("loadMarketQRPerfume")
+      .classList.add("hidden");
+
+    if (matches.length !== 1) {
+
+      $("marketQRResult").textContent =
+        matches.length > 1
+          ? "Duplicate QR Code!"
+          : "❌ Perfume မတွေ့ပါ။";
+
+      return false;
+
+    }
+
+    const p = matches[0];
+
+    selectedPerfume = p;
+
+    $("manualMarketQR").value = p.qrCode;
+
+    $("marketQRResult").textContent =
+
+      "✅ QR Scan Successful\n\n" +
+      p.name + "\n" +
+      (p.category || "UNCATEGORIZED") + "\n" +
+      (p.bottleMl || "—") + " ml\n" +
+      p.qrCode;
+
+    $("loadMarketQRPerfume")
+      .classList.remove("hidden");
+
+    return true;
+
+  }
+
+  async function startScanner() {
+
+    if (!window.isSecureContext) {
+
+      alert("Camera သုံးရန် HTTPS Website လိုအပ်ပါသည်။");
+      return;
+
+    }
+
+    if (typeof Html5QrcodeScanner === "undefined") {
+
+      alert("Scanner Library မရသေးပါ။ Internet စစ်ပါ။");
+      return;
+
+    }
+
+    try {
+
+      await stopScanner();
+
+      selectedPerfume = null;
+      scanLocked = false;
+
+      $("loadMarketQRPerfume")
+        .classList.add("hidden");
+
+      $("marketQRResult").textContent =
+        "QR Sticker ကို Camera ရှေ့ထားပါ။";
+
+      scanner = new Html5QrcodeScanner(
+
+        "marketQRReader",
+
+        {
+          fps: 10,
+          qrbox: {
+            width: 220,
+            height: 220
+          },
+          formatsToSupport: [
+            Html5QrcodeSupportedFormats.QR_CODE
+          ]
+        },
+
+        false
+
+      );
+
+      scanner.render(async decodedText => {
+
+        if (scanLocked) return;
+
+        if (!findPerfumeByQR(decodedText)) return;
+
+        scanLocked = true;
+
+        try {
+
+          await stopScanner();
+
+        } catch (error) {
+
+          showError(error);
+
+        }
+
+      }, () => {});
+
+    } catch (error) {
+
+      showError(error);
+
+    }
+
+  }
+
+  // =========================================
+  // OPEN MATCHED PERFUME IN CALCULATOR
+  // =========================================
+
+  $("loadMarketQRPerfume")
+    .addEventListener("click", () => {
+
+      if (!selectedPerfume) return;
+
+      const name = String(selectedPerfume.name)
+        .trim().toLowerCase();
+
+      const index = getSaved().findIndex(p =>
+        String(p.name || "")
+          .trim().toLowerCase() === name
+      );
+
+      if (index < 0) {
+
+        alert("Perfume စာရင်းမတွေ့ပါ။");
+        return;
+
+      }
+
+      setPricingMode("direct");
+
+      loadItem(index);
+
+      panel.classList.add("hidden");
+
+    });
+
+  // =========================================
+  // BUTTON EVENTS
+  // =========================================
+
+  $("printSampleQR").addEventListener(
+    "click",
+    () => printPerfumeQR(5)
+  );
+
+  $("printAllQR").addEventListener(
+    "click",
+    () => printPerfumeQR(Infinity)
+  );
+
+  $("startMarketQR").addEventListener(
+    "click",
+    startScanner
+  );
+
+  $("stopMarketQR").addEventListener(
+    "click",
+    () => stopScanner().catch(showError)
+  );
+
+  $("findMarketQR").addEventListener(
+    "click",
+    () => findPerfumeByQR(
+      $("manualMarketQR").value
+    )
+  );
+
+  $("manualMarketQR").addEventListener(
+    "keydown",
+    e => {
+
+      if (e.key === "Enter") {
+
+        e.preventDefault();
+
+        findPerfumeByQR(e.target.value);
+
+      }
+
+    }
+  );
+
+})();
+</script>  
 </body>
 </html>
