@@ -1021,7 +1021,7 @@ function renderBottleDefaultGridTarget(gridId) {
   const map = readBottleCosts();
   const featured = [2, 5, 10, 30];
   const allSizes = [...featured, ...STANDARD_ML.filter(s => !featured.includes(s))];
-  grid.innerHTML = allSizes.map(sz => {
+  grid.inner = allSizes.map(sz => {
     const val = map[String(sz)] !== undefined ? map[String(sz)] : "";
     const isFeatured = featured.includes(sz);
     return `<label class="bottle-default-card ${isFeatured ? 'featured' : ''}">
@@ -1253,7 +1253,7 @@ function renderMlTable() {
   if (mode === "fullsize") return;
   const root = $("mlPriceGrid");
   const rows = STANDARD_ML.map(size => mode === "consignment" ? calcConsignment(size) : calcDirect(size));
-  root.innerHTML = rows.map(r => {
+  root.inner = rows.map(r => {
     if (!r.hasBottleCost) return `<div class="ml-price-card"><span>${r.sizeMl}ml</span><strong>—</strong><small>Bottle + Pack ဈေးမသိသေး</small></div>`;
     return `<div class="ml-price-card"><span>${r.sizeMl}ml</span><strong>${ks(r.recommended)}</strong><small>Bottle ${ks(r.packCost)} • Profit ${ks(r.netProfit)}</small></div>`;
   }).join("");
@@ -4894,26 +4894,46 @@ window.deleteCredit = deleteCredit;
 
   }
 
-  async function stopScanner() {
+  let cameraStarting = null;
 
-    if (stopping) return stopping;
-    if (!scanner) return;
+async function stopScanner() {
 
-    const current = scanner;
+  if (stopping) return stopping;
+  if (!scanner) return;
 
-    stopping = current.clear().then(() => {
+  const current = scanner;
 
-      if (scanner === current) scanner = null;
+  stopping = (async () => {
 
-    }).finally(() => {
+    if (cameraStarting) {
+      try {
+        await cameraStarting;
+      } catch {}
+    }
 
-      stopping = null;
+    if (current.isScanning) {
+      await current.stop();
+    }
 
-    });
+    current.clear();
 
-    return stopping;
+    if (scanner === current) {
+      scanner = null;
+    }
 
-  }
+  })().finally(() => {
+
+    stopping = null;
+
+    $("startMarketQR").disabled = false;
+
+    $("marketQRReader")
+      .classList.add("hidden");
+
+  });
+
+  return stopping;
+}
 
   function findPerfumeByQR(text) {
 
@@ -4963,57 +4983,84 @@ window.deleteCredit = deleteCredit;
 
   async function startScanner() {
 
-    if (!window.isSecureContext) {
+  if (scanner || cameraStarting || stopping) {
+    return;
+  }
 
-      alert("Camera သုံးရန် HTTPS Website လိုအပ်ပါသည်။");
-      return;
+  if (!window.isSecureContext) {
 
-    }
+    alert("Camera သုံးရန် HTTPS လိုအပ်ပါသည်။");
+    return;
 
-    if (typeof Html5QrcodeScanner === "undefined") {
+  }
 
-      alert("Scanner Library မရသေးပါ။ Internet စစ်ပါ။");
-      return;
+  if (typeof Html5Qrcode === "undefined") {
 
-    }
+    alert("QR Scanner Library မရသေးပါ။");
+    return;
 
-    try {
+  }
 
-      await stopScanner();
+  try {
 
-      selectedPerfume = null;
-      scanLocked = false;
+    selectedPerfume = null;
+    scanLocked = false;
 
-      $("loadMarketQRPerfume")
-        .classList.add("hidden");
+    $("startMarketQR").disabled = true;
 
-      $("marketQRResult").textContent =
-        "QR Sticker ကို Camera ရှေ့ထားပါ။";
+    $("loadMarketQRPerfume")
+      .classList.add("hidden");
 
-      scanner = new Html5QrcodeScanner(
+    $("marketQRReader")
+      .classList.remove("hidden");
 
-        "marketQRReader",
+    $("marketQRResult").textContent =
+      "QR Sticker ကို Camera ရှေ့ထားပါ။";
 
-        {
-          fps: 10,
-          qrbox: {
-            width: 220,
-            height: 220
-          },
-          formatsToSupport: [
-            Html5QrcodeSupportedFormats.QR_CODE
-          ]
-        },
+    scanner = new Html5Qrcode(
+      "marketQRReader",
+      {
+        formatsToSupport: [
+          Html5QrcodeSupportedFormats.QR_CODE
+        ],
+        verbose: false
+      }
+    );
 
-        false
+    cameraStarting = scanner.start(
 
-      );
+      // နောက်ဘက် Camera အလိုအလျောက်ဖွင့်ရန်
 
-      scanner.render(async decodedText => {
+      {
+        facingMode: "environment"
+      },
 
-        if (scanLocked) return;
+      {
+        fps: 15,
 
-        if (!findPerfumeByQR(decodedText)) return;
+        qrbox: function(width, height) {
+
+          const size = Math.floor(
+            Math.min(width, height) * 0.75
+          );
+
+          return {
+            width: size,
+            height: size
+          };
+
+        }
+      },
+
+      // QR ဖတ်မိသောအခါ
+
+      async decodedText => {
+
+        if (scanLocked || stopping) return;
+
+        if (!findPerfumeByQR(decodedText)) {
+          return;
+        }
 
         scanLocked = true;
 
@@ -5021,21 +5068,44 @@ window.deleteCredit = deleteCredit;
 
           await stopScanner();
 
+          if (navigator.vibrate) {
+            navigator.vibrate(100);
+          }
+
         } catch (error) {
 
           showError(error);
 
         }
 
-      }, () => {});
+      },
 
-    } catch (error) {
+      () => {}
 
-      showError(error);
+    );
 
-    }
+    await cameraStarting;
+
+  } catch (error) {
+
+    try {
+      await stopScanner();
+    } catch {}
+
+    $("startMarketQR").disabled = false;
+
+    showError(
+      "Camera ဖွင့်၍မရပါ။ " +
+      String(error)
+    );
+
+  } finally {
+
+    cameraStarting = null;
 
   }
+
+}
 
   // =========================================
   // OPEN MATCHED PERFUME IN CALCULATOR
