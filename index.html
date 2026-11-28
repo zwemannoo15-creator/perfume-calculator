@@ -4022,7 +4022,510 @@ window.deleteCredit = deleteCredit;
   calculate();
 
 })();
+// ==========================================
+// POP-UP MARKET PRICE LIST / PDF
+// ==========================================
 
+(() => {
+
+  function getPopupMargins(p) {
+
+    // V32 Auto Margin စနစ်ရှိလျှင် အသုံးပြုမည်
+    if (typeof effectiveMargins === "function") {
+      return effectiveMargins(p);
+    }
+
+    const saved = {
+      direct: Number(p.directMarkup ?? 15),
+      full: Number(p.fullSizeMarkup ?? 15)
+    };
+
+    if (!$("pricingCategory")) return saved;
+
+    const defaults = {
+      uaeLimit: 150000,
+      uaeLowDirect: 30,
+      uaeHighDirect: 25,
+      uaeLowFull: 25,
+      uaeHighFull: 25,
+      designerLimit: 200000,
+      designerLowDirect: 30,
+      designerHighDirect: 25,
+      designerLowFull: 20,
+      designerHighFull: 20,
+      nicheDirect: 25,
+      nicheFull: 20
+    };
+
+    let manual = {};
+
+    try {
+      Object.assign(defaults, JSON.parse(
+        localStorage.getItem(
+          "perfumeCategoryMarginRulesV1"
+        ) || "{}"
+      ));
+
+      manual = JSON.parse(
+        localStorage.getItem(
+          "perfumeCategoryManualMarginsV1"
+        ) || "{}"
+      );
+    } catch {}
+
+    const category = String(p.category || "")
+      .trim().toUpperCase();
+
+    const cost = Number(p.fullPrice);
+    let rule = null;
+
+    if (category === "UAE") {
+      rule = cost <= defaults.uaeLimit
+        ? {
+            direct: defaults.uaeLowDirect,
+            full: defaults.uaeLowFull
+          }
+        : {
+            direct: defaults.uaeHighDirect,
+            full: defaults.uaeHighFull
+          };
+    }
+
+    if (category === "DESIGNER") {
+      rule = cost <= defaults.designerLimit
+        ? {
+            direct: defaults.designerLowDirect,
+            full: defaults.designerLowFull
+          }
+        : {
+            direct: defaults.designerHighDirect,
+            full: defaults.designerHighFull
+          };
+    }
+
+    if (category === "NICHE") {
+      rule = {
+        direct: defaults.nicheDirect,
+        full: defaults.nicheFull
+      };
+    }
+
+    if (!rule) return saved;
+
+    const key = "perfume:" +
+      String(p.name).trim().toLowerCase();
+
+    const flags = manual[key] || {};
+
+    return {
+      direct: flags.direct ? saved.direct : rule.direct,
+      full: flags.full ? saved.full : rule.full
+    };
+  }
+
+  function popupPrices(p) {
+
+    const fields = [
+      "fullPrice",
+      "bottleMl",
+      "wastage",
+      "directMarkup",
+      "fullSizeMarginInput",
+      "roundTo",
+      "decantMl"
+    ];
+
+    const original = {};
+
+    fields.forEach(id => {
+      original[id] = $(id).value;
+    });
+
+    try {
+
+      const margins = getPopupMargins(p);
+
+      const cost = Number(p.fullPrice);
+      const bottle = Number(p.bottleMl ?? 100);
+      const wastage = Number(p.wastage ?? 5);
+      const step = Number(p.roundTo ?? 1000);
+
+      if (!Number.isFinite(cost) || cost <= 0) {
+        return [null, null, null, null, null];
+      }
+
+      $("fullPrice").value = cost;
+      $("bottleMl").value = bottle;
+      $("wastage").value = wastage;
+      $("directMarkup").value = margins.direct;
+      $("fullSizeMarginInput").value = margins.full;
+      $("roundTo").value = step;
+
+      // Default Bottle + Pack ဈေးကို အသုံးပြုရန်
+      $("decantMl").value = 0;
+
+      const usableMl = bottle * (1 - wastage / 100);
+
+      // မူလ Direct Formula ကို တိုက်ရိုက်အသုံးပြုမည်
+      const prices = [2, 5, 10, 30].map(ml => {
+
+        if (
+          !Number.isFinite(usableMl) ||
+          bottle <= 0 ||
+          wastage < 0 ||
+          wastage >= 100 ||
+          ml > usableMl ||
+          !Number.isFinite(step) ||
+          step <= 0 ||
+          !Number.isFinite(Number(margins.direct)) ||
+          Number(margins.direct) < 0
+        ) {
+          return null;
+        }
+
+        const result = calcDirect(ml);
+
+        return result.hasBottleCost
+          ? result.recommended
+          : null;
+      });
+
+      // မူလ Full Size Formula
+      const fullPrice = (
+        Number.isFinite(Number(margins.full)) &&
+        Number(margins.full) >= 0
+      ) ? calcFullSize().recommended : null;
+
+      return [...prices, fullPrice];
+
+    } finally {
+
+      // Calculator ထဲက မူလတန်ဖိုးများ ပြန်ထားမည်
+      fields.forEach(id => {
+        $(id).value = original[id];
+      });
+    }
+  }
+
+  function formatPrice(value) {
+
+    if (!Number.isFinite(value)) return "—";
+
+    return Math.round(value).toLocaleString("en-US");
+  }
+
+  function exportPopupPriceList() {
+
+    const catalog = getPerfumeCatalog().slice();
+
+    if (!catalog.length) {
+      alert("Perfume စာရင်းမရှိသေးပါ။");
+      return;
+    }
+
+    if (!liveSheetReady && !confirm(
+      "LIVE Sheet မချိတ်ဆက်ထားပါ။ " +
+      "နောက်ဆုံးသိမ်းထားသော ဈေးစာရင်းကို ထုတ်မလား?"
+    )) {
+      return;
+    }
+
+    const win = window.open(
+      "",
+      "_blank",
+      "width=1200,height=850"
+    );
+
+    if (!win) {
+      alert("Browser မှာ Pop-up Allow လုပ်ပေးပါ။");
+      return;
+    }
+
+    const categories = [
+      "UAE",
+      "DESIGNER",
+      "NICHE",
+      "OTHERS"
+    ];
+
+    const date = new Date().toLocaleString("en-GB", {
+      timeZone: "Asia/Yangon"
+    });
+
+    let rows = "";
+
+    categories.forEach(category => {
+
+      const items = catalog.filter(p => {
+
+        const cat = String(p.category || "")
+          .trim().toUpperCase();
+
+        return category === "OTHERS"
+          ? !["UAE", "DESIGNER", "NICHE"].includes(cat)
+          : cat === category;
+
+      }).sort((a, b) =>
+        String(a.name).localeCompare(
+          String(b.name),
+          undefined,
+          { sensitivity: "base" }
+        )
+      );
+
+      if (!items.length) return;
+
+      rows += `
+        <tr class="category ${category.toLowerCase()}">
+          <td colspan="7">
+            ${category} — ${items.length} Perfumes
+          </td>
+        </tr>
+      `;
+
+      items.forEach((p, index) => {
+
+        const prices = popupPrices(p);
+
+        rows += `
+          <tr>
+            <td class="number">${index + 1}</td>
+
+            <td class="name">
+              ${escapeHtml(p.name)}
+            </td>
+
+            ${prices.map(price =>
+              `<td class="price">
+                ${formatPrice(price)}
+              </td>`
+            ).join("")}
+
+          </tr>
+        `;
+      });
+    });
+
+    win.document.open();
+
+    win.document.write(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+
+        <meta charset="UTF-8">
+
+        <title>Pop-up Market Price List</title>
+
+        <style>
+
+          @page {
+            size: A4 landscape;
+            margin: 10mm;
+          }
+
+          * {
+            box-sizing: border-box;
+          }
+
+          body {
+            font-family: Arial, sans-serif;
+            color: #111827;
+            margin: 15px;
+          }
+
+          h1 {
+            margin: 0;
+            font-size: 25px;
+          }
+
+          .subtitle {
+            color: #64748b;
+            font-size: 12px;
+            margin: 6px 0 18px;
+          }
+
+          table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+          }
+
+          thead {
+            display: table-header-group;
+          }
+
+          th {
+            background: #111827;
+            color: white;
+            padding: 10px 6px;
+            border: 1px solid #d1d5db;
+            white-space: nowrap;
+          }
+
+          td {
+            border: 1px solid #d1d5db;
+            padding: 8px 7px;
+          }
+
+          tr {
+            break-inside: avoid;
+          }
+
+          .number {
+            width: 4%;
+            text-align: center;
+          }
+
+          .name {
+            width: 31%;
+            font-weight: bold;
+          }
+
+          .price {
+            width: 13%;
+            text-align: right;
+            font-weight: 600;
+            white-space: nowrap;
+          }
+
+          .category td {
+            font-weight: bold;
+            padding: 9px;
+            font-size: 13px;
+          }
+
+          .category {
+            break-after: avoid;
+          }
+
+          .uae td {
+            background: #dcfce7;
+          }
+
+          .designer td {
+            background: #dbeafe;
+          }
+
+          .niche td {
+            background: #fef3c7;
+          }
+
+          .others td {
+            background: #e5e7eb;
+          }
+
+          tbody tr:nth-child(even):not(.category) {
+            background: #f8fafc;
+          }
+
+          button {
+            background: #111827;
+            color: white;
+            border: 0;
+            padding: 12px 22px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 18px;
+          }
+
+          .footer {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 12px;
+          }
+
+          @media print {
+
+            .no-print {
+              display: none !important;
+            }
+
+            body {
+              margin: 0;
+              print-color-adjust: exact;
+              -webkit-print-color-adjust: exact;
+            }
+          }
+
+        </style>
+
+      </head>
+
+      <body>
+
+        <button class="no-print" id="printPrices">
+          Print / Save as PDF
+        </button>
+
+        <h1>POP-UP MARKET PRICE LIST</h1>
+
+        <div class="subtitle">
+          DIRECT SELLING PRICE • MMK<br>
+          ${catalog.length} Perfumes • ${date}<br>
+          ${liveSheetReady ? "LIVE DATA" : "CACHED DATA"}
+        </div>
+
+        <table>
+
+          <thead>
+            <tr>
+              <th>No.</th>
+              <th>Perfume Name</th>
+              <th>2ml</th>
+              <th>5ml</th>
+              <th>10ml</th>
+              <th>30ml</th>
+              <th>Full Size</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            ${rows}
+          </tbody>
+
+        </table>
+
+        <div class="footer">
+          All prices in Myanmar Kyats (MMK).
+          Full Size includes existing delivery charge.
+          — = Price unavailable.
+          Internal Staff Price Reference.
+        </div>
+
+      </body>
+      </html>
+    `);
+
+    win.document.close();
+
+    win.document
+      .getElementById("printPrices")
+      .addEventListener("click", () => win.print());
+  }
+
+  // Calculator ထဲတွင် Export Button ထည့်မည်
+
+  const button = document.createElement("button");
+
+  button.type = "button";
+  button.id = "popupMarketPriceBtn";
+  button.className = "primary-btn";
+  button.textContent = "Pop-up Market Price List";
+  button.style.marginTop = "12px";
+  button.style.width = "100%";
+
+  button.addEventListener(
+    "click",
+    exportPopupPriceList
+  );
+
+  document.querySelector(".module-card")
+    .appendChild(button);
+
+})();
+  
 </script>
 </body>
 </html>
